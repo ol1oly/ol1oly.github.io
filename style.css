@@ -1,6 +1,6 @@
 body {/*For displaying the projects, make that when click the images, it loads a carrousel with the projects that i made in that. */
       /*the caroussel is just below the images and when click, goto caroussel*/
-    background-color: white;
+   border: #005ce6; 
   }
   .experience h1{
     margin-bottom: 600px;
@@ -43,11 +43,18 @@ body {/*For displaying the projects, make that when click the images, it loads a
   .button-container button {
     font-size: x-large;
     text-align: center;
-    background-color:white;
+    background-color:#0066ff;
+    color: white;
     border-radius: 8px;
     padding: 1%;
     margin-left: 20px;
     margin-top: 20px;
+    border-color: #0066ff;
+    
+  }.button-container button:hover {
+
+    background-color: #005ce6;
+    
   }
   .AB p{
     color: black;
@@ -104,71 +111,79 @@ body {/*For displaying the projects, make that when click the images, it loads a
   
 }
 
-.tables{
+.tables {
   display: flex;
   margin: 100px;
   border-collapse: collapse;
   height: 600px;
   padding: 0;
   border: 1px solid black;
-  
 }
-
-.tables .options{
-  align-items: "left";
-  justify-content: left;
+/*
+.tables .options {
+  flex-direction: column;
   border-collapse: collapse;
   text-align: center;
   user-select: none;
-
 }
-.tables .content{
-  align-items: "center";
-  justify-content: center;
+.tables .options td {
+  font-size: 64px;
+  border: 1px solid black;
+  background-color: white; 
+  transition: background-color 0.3s, color 0.3s;
+}*/
+
+.tables .content {
   border-collapse: collapse;
-  flex-grow: 1;  /* Allows the content table to take up the remaining space */
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1; /* Allows the content table to take up the remaining space */
   text-align: center;
 }
 
-td{
-  font-size:64px;
-  border: 1px solid black;
-  background-color: white;
-  width: 100%;
-  
 
-}
+
+
 .contentArrows{
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
   position: relative;
+  font-size: 60px;
 
 }
-
+.contentArrows td{
+  display: flex;
+  align-items: top;
+  justify-content: top;
+  
+}
 .contentArrows img{
+  
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 80%;
   height: 500px;
+ 
+  
+
+  
   /*then, add text that is absolute also*/
 }
 .contentArrows .arrowL{
   position: absolute;
-  left:20px
+  left:2%
   
 }
 .contentArrows .arrowR{
   position: absolute;
-  right: 20px;
+  right: 2%;
 }
 .contentArrows p{
   position: absolute;
   bottom: 20px;
-  
-  
   font-weight: bold;
   color: black;
 }
