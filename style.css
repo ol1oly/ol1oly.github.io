@@ -1,0 +1,175 @@
+body {/*For displaying the projects, make that when click the images, it loads a carrousel with the projects that i made in that. */
+      /*the caroussel is just below the images and when click, goto caroussel*/
+    background-color: white;
+  }
+  .experience h1{
+    margin-bottom: 600px;
+    margin-top: 600px
+  }
+  
+  h1 {
+    color: black;
+    font-weight: bold;
+    font-size:xxx-large; 
+    text-align: center;
+    margin-bottom: 60px;
+    margin-top: 60px
+
+    }
+  p {
+    color: rgb(14, 14, 14);
+    font-size: x-large;
+    text-align: center;
+    font-weight:bold;
+  }
+  img {
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto;
+    padding-top:2%;
+    width: 350px;
+    height: 350px;
+    border-radius: 10px;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center; /* Centers buttons horizontally */
+    
+     /* Full viewport height for vertical centering */
+  }
+
+  /* Optional: add some spacing between the buttons */
+  .button-container button {
+    font-size: x-large;
+    text-align: center;
+    background-color:white;
+    border-radius: 8px;
+    padding: 1%;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+  .AB p{
+    color: black;
+    line-height: 50px;
+    
+  }
+
+  .images img{
+    display: flex;
+    width: 100px; /* Set a smaller width */
+    height: auto; 
+    margin-left: 100px; 
+    margin-right: 100px;
+  }
+  .images {
+    display: flex; /* Arrange images in a row */
+    justify-content: center;
+    margin-bottom: 50px;
+}
+.skillimages {
+  justify-content: center;
+  display: flex; /* Arrange images in a row */
+  
+}
+  .skillimages img{
+    width: 100px; /* Set a smaller width */
+    height: auto; 
+    margin-left: 100px; 
+    margin-right: 100px;
+    
+  }
+  .projects {
+             /* Increase font size for the main heading */             /* Dark color for better visibility */
+    margin-bottom: 20px;     /* Space below the main heading */
+}
+
+.project-items h1 {
+    font-size: 2.5em;        /* Font size for the project headings */
+    color: #333;             /* Change color of project headings to aqua */
+    margin: 10px 0;         /* Space above and below each project heading */
+}
+.contacting {
+                 /* Use Flexbox to arrange child elements in a row */       /* Stack items vertically */
+  align-items: center;      
+  justify-content: center;
+  margin: 20px ;   
+  font-size: xx-large;        
+}
+
+.contacting p {            
+ 
+  justify-content: center; 
+  align-items: center;         /* Space above and below each paragraph */
+  
+}
+
+.tables{
+  display: flex;
+  margin: 100px;
+  border-collapse: collapse;
+  height: 600px;
+  padding: 0;
+  border: 1px solid black;
+  
+}
+
+.tables .options{
+  align-items: "left";
+  justify-content: left;
+  border-collapse: collapse;
+  text-align: center;
+  user-select: none;
+
+}
+.tables .content{
+  align-items: "center";
+  justify-content: center;
+  border-collapse: collapse;
+  flex-grow: 1;  /* Allows the content table to take up the remaining space */
+  text-align: center;
+}
+
+td{
+  font-size:64px;
+  border: 1px solid black;
+  background-color: white;
+  width: 100%;
+  
+
+}
+.contentArrows{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  position: relative;
+
+}
+
+.contentArrows img{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 500px;
+  /*then, add text that is absolute also*/
+}
+.contentArrows .arrowL{
+  position: absolute;
+  left:20px
+  
+}
+.contentArrows .arrowR{
+  position: absolute;
+  right: 20px;
+}
+.contentArrows p{
+  position: absolute;
+  bottom: 20px;
+  
+  
+  font-weight: bold;
+  color: black;
+}
+
