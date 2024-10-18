@@ -1,21 +1,17 @@
 body {/*For displaying the projects, make that when click the images, it loads a carrousel with the projects that i made in that. */
       /*the caroussel is just below the images and when click, goto caroussel*/
-   border: #005ce6; 
+   
   }
-  .experience h1{
-    margin-bottom: 600px;
-    margin-top: 600px
-  }
+  
   
   h1 {
     color: black;
     font-weight: bold;
     font-size:xxx-large; 
     text-align: center;
-    margin-bottom: 60px;
-    margin-top: 60px
-
     }
+    
+    
   p {
     color: rgb(14, 14, 14);
     font-size: x-large;
@@ -31,7 +27,14 @@ body {/*For displaying the projects, make that when click the images, it loads a
     height: 350px;
     border-radius: 10px;
   }
-  
+  .experience{
+    margin-top: 80px;
+    width: 38%;
+    padding: 0.02rem;
+    
+    
+  }
+ 
   .button-container {
     display: flex;
     justify-content: center; /* Centers buttons horizontally */
@@ -43,23 +46,20 @@ body {/*For displaying the projects, make that when click the images, it loads a
   .button-container button {
     font-size: x-large;
     text-align: center;
-    background-color:#0066ff;
-    color: white;
+    background-color:rgba(86, 209, 250, 0.45);
+    color: black;
     border-radius: 8px;
     padding: 1%;
     margin-left: 20px;
     margin-top: 20px;
-    border-color: #0066ff;
+    border-color: rgba(86, 209, 250, 0.45);
+    transition: background-color 0.3s ease, border-color 0.3s ease; 
     
   }.button-container button:hover {
 
-    background-color: #005ce6;
-    
-  }
-  .AB p{
-    color: black;
-    line-height: 50px;
-    
+    background-color: rgba(86, 209, 250, 0.7);
+    border-color: rgba(86, 209, 250, 0.6);
+  
   }
 
   .images img{
@@ -96,20 +96,7 @@ body {/*For displaying the projects, make that when click the images, it loads a
     color: #333;             /* Change color of project headings to aqua */
     margin: 10px 0;         /* Space above and below each project heading */
 }
-.contacting {
-                 /* Use Flexbox to arrange child elements in a row */       /* Stack items vertically */
-  align-items: center;      
-  justify-content: center;
-  margin: 20px ;   
-  font-size: xx-large;        
-}
 
-.contacting p {            
- 
-  justify-content: center; 
-  align-items: center;         /* Space above and below each paragraph */
-  
-}
 
 .tables {
   display: flex;
@@ -119,19 +106,7 @@ body {/*For displaying the projects, make that when click the images, it loads a
   padding: 0;
   border: 1px solid black;
 }
-/*
-.tables .options {
-  flex-direction: column;
-  border-collapse: collapse;
-  text-align: center;
-  user-select: none;
-}
-.tables .options td {
-  font-size: 64px;
-  border: 1px solid black;
-  background-color: white; 
-  transition: background-color 0.3s, color 0.3s;
-}*/
+
 
 .tables .content {
   border-collapse: collapse;
@@ -166,25 +141,75 @@ body {/*For displaying the projects, make that when click the images, it loads a
   justify-content: center;
   width: 80%;
   height: 500px;
- 
-  
 
-  
-  /*then, add text that is absolute also*/
 }
-.contentArrows .arrowL{
+
+.triangle-left {
   position: absolute;
-  left:2%
+  left: 1%;
+  width: 0;
+  height: 0;
+  border-top: 80px solid transparent;
+  border-bottom: 80px solid transparent;
+  border-right: 45px solid white; 
+  transition: border-color 0.4s ease;
   
 }
-.contentArrows .arrowR{
+
+.triangle-right {
   position: absolute;
-  right: 2%;
+  right: 1%;
+  width: 0;
+  height: 0;
+  border-top: 80px solid transparent;
+  border-bottom: 80px solid transparent;
+  border-left: 45px solid white;
+  transition: border-color 0.4s ease;
+  
 }
+  .triangle-left:hover{
+  border-right: 45px solid black;
+}
+.triangle-right:hover{
+  border-left: 45px solid black;
+}
+
+
 .contentArrows p{
   position: absolute;
   bottom: 20px;
   font-weight: bold;
   color: black;
+}
+
+
+.AB {
+  color: black;
+  line-height: 50px;
+  padding: 30px;  
+  width: 85%;
+  
+}
+
+
+
+.contacting {
+  /* Use Flexbox to arrange child elements in a row */       /* Stack items vertically */
+align-items: center;      
+justify-content: center;
+margin: 20px ;   
+font-size: xx-large; 
+width: 45%;
+padding: 3px; 
+
+}
+
+
+.back{
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(86, 209, 250, 0.45);/* 0.93 really good color*/
+  border-radius: 100px;
+  
 }
 
