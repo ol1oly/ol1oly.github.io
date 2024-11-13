@@ -30,10 +30,10 @@ const images=["images/Aimlab.png","images/chessGame.png","images/guessTemp.png",
 const description = [
     "Made in Unity", 
     "Made in Unity, fully functional chess game. Plans to make it multiplayer",
-    "Made with Python and Tkinter, using OpenWeatherMap API",
+    "Made with Python and Tkinter, using OpenWeatherMap API. Guess the temperature of a city",
     "Made in school with JavaFX, recreation of the game Rush Hour",
     "Made in school with JavaFX, recreation of the Crossword game",
-    "Made with Tkinter, using GeoNames API, an API with geographic data"
+    "Made with Tkinter, using GeoNames API, an API with geographic data. Quiz about countries, cities and capitals."
 ];
 var index=0;
 /*
