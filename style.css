@@ -28,7 +28,7 @@ body {/*For displaying the projects, make that when click the images, it loads a
     border: 20px;
     border-radius: 20px;
   }
-  .experience{
+  .experience{ /*specifies the label for the programming experience*/
     margin-top: 80px;
     width: 38%;
     padding: 0.02rem;
@@ -74,6 +74,15 @@ body {/*For displaying the projects, make that when click the images, it loads a
     display: flex; /* Arrange images in a row */
     justify-content: center;
     margin-bottom: 50px;
+}
+.images a{
+  margin-top: 30px;
+  justify-content: center;
+  display: flex;
+  width: 100px; /* Set a smaller width */
+  height:150px; 
+  margin-left: 100px; 
+  margin-right: 100px;
 }
 .skillimages {
   justify-content: center;
