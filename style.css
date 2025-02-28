@@ -1,6 +1,6 @@
 body {/*For displaying the projects, make that when click the images, it loads a carrousel with the projects that i made in that. */
       /*the caroussel is just below the images and when click, goto caroussel*/
-   
+   background-color: rgba(110, 160, 236, 0.185);
   }
   
   
@@ -25,7 +25,8 @@ body {/*For displaying the projects, make that when click the images, it loads a
     padding-top:2%;
     width: 350px;
     height: 350px;
-    border-radius: 10px;
+    border: 20px;
+    border-radius: 20px;
   }
   .experience{
     margin-top: 80px;
@@ -46,7 +47,7 @@ body {/*For displaying the projects, make that when click the images, it loads a
   .button-container button {
     font-size: x-large;
     text-align: center;
-    background-color:rgba(86, 209, 250, 0.45);
+    background-color:rgba(86, 157, 250, 0.289);
     color: black;
     border-radius: 8px;
     padding: 1%;
@@ -57,8 +58,8 @@ body {/*For displaying the projects, make that when click the images, it loads a
     
   }.button-container button:hover {
 
-    background-color: rgba(86, 209, 250, 0.7);
-    border-color: rgba(86, 209, 250, 0.6);
+    background-color: rgba(86, 157, 250, 0.701);
+    border-color: rgba(86, 157, 250, 0.701);
   
   }
 
@@ -84,6 +85,7 @@ body {/*For displaying the projects, make that when click the images, it loads a
     height: auto; 
     margin-left: 100px; 
     margin-right: 100px;
+    
     
   }
   .projects {
@@ -208,8 +210,8 @@ padding: 3px;
 .back{
   margin-left: auto;
   margin-right: auto;
-  background-color: rgba(86, 209, 250, 0.45);/* 0.93 really good color*/
-  border-radius: 100px;
+  background-color: rgba(86, 157, 250, 0.289);
+  border-radius: 50px;
   align-content: center;
   
 }
