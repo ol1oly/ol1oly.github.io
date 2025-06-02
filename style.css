@@ -1,111 +1,122 @@
-body {/*For displaying the projects, make that when click the images, it loads a carrousel with the projects that i made in that. */
-      /*the caroussel is just below the images and when click, goto caroussel*/
-   background-color: rgba(110, 160, 236, 0.185);
-  }
-  
-  
-  h1 {
-    color: black;
-    font-weight: bold;
-    font-size:xxx-large; 
-    text-align: center;
-    }
-    
-    
-  p {
-    color: rgb(14, 14, 14);
-    font-size: x-large;
-    text-align: center;
-    font-weight:bold;
-  }
-  img {
-    display: block; 
-    margin-left: auto; 
-    margin-right: auto;
-    padding-top:2%;
-    width: 350px;
-    height: 350px;
-    border: 20px;
-    border-radius: 20px;
-  }
-  .experience{ /*specifies the label for the programming experience*/
-    margin-top: 80px;
-    width: 38%;
-    padding: 0.02rem;
-    
-    
-  }
- 
-  .button-container {
-    display: flex;
-    justify-content: center; /* Centers buttons horizontally */
-    
-     /* Full viewport height for vertical centering */
-  }
-
-  /* Optional: add some spacing between the buttons */
-  .button-container button {
-    font-size: x-large;
-    text-align: center;
-    background-color:rgba(86, 157, 250, 0.289);
-    color: black;
-    border-radius: 8px;
-    padding: 1%;
-    margin-left: 20px;
-    margin-top: 20px;
-    border-color: rgba(86, 209, 250, 0.45);
-    transition: background-color 0.3s ease, border-color 0.3s ease; 
-    
-  }.button-container button:hover {
-
-    background-color: rgba(86, 157, 250, 0.701);
-    border-color: rgba(86, 157, 250, 0.701);
-  
-  }
-
-  .images img{
-    display: flex;
-    width: 100px; /* Set a smaller width */
-    height: auto; 
-    margin-left: 100px; 
-    margin-right: 100px;
-  }
-  .images {
-    display: flex; /* Arrange images in a row */
-    justify-content: center;
-    margin-bottom: 50px;
+body {
+  /*For displaying the projects, make that when click the images, it loads a carrousel with the projects that i made in that. */
+  /*the caroussel is just below the images and when click, goto caroussel*/
+  background-color: rgba(110, 160, 236, 0.185);
 }
-.images a{
+
+
+h1 {
+  color: black;
+  font-weight: bold;
+  font-size: xxx-large;
+  text-align: center;
+}
+
+
+p {
+  color: rgb(14, 14, 14);
+  font-size: x-large;
+  text-align: center;
+  font-weight: bold;
+}
+
+#profile_pic {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+
+  width: 280px;
+  height: auto;
+  border-radius: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.experience {
+  /*specifies the label for the programming experience*/
+  margin-top: 80px;
+  width: 38%;
+  padding: 0.02rem;
+
+
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  /* Centers buttons horizontally */
+
+  /* Full viewport height for vertical centering */
+}
+
+
+.button-container button {
+  font-size: x-large;
+  text-align: center;
+  background-color: rgba(86, 157, 250, 0.289);
+  color: black;
+  border-radius: 8px;
+  padding: 1%;
+  margin-left: 20px;
+  margin-top: 20px;
+  border-color: rgba(86, 209, 250, 0.45);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+}
+
+.button-container button:hover {
+
+  background-color: rgba(86, 157, 250, 0.701);
+  border-color: rgba(86, 157, 250, 0.701);
+
+}
+
+
+.images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* or space-between */
+  gap: 10px;
+  /* spacing between images */
+  max-width: 1000px;
+  /* optional */
+  margin: auto;
+}
+
+.images img {
   margin-top: 30px;
   justify-content: center;
   display: flex;
-  width: 100px; /* Set a smaller width */
-  height:150px; 
-  margin-left: 100px; 
+  width: 100px;
+  /* Set a smaller width */
+  height: 150px;
+  margin-left: 100px;
   margin-right: 100px;
+  transition: transform 0.2s ease;
 }
-.skillimages {
-  justify-content: center;
-  display: flex; /* Arrange images in a row */
-  
+
+.images img:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
 }
-  .skillimages img{
-    width: 100px; /* Set a smaller width */
-    height: auto; 
-    margin-left: 100px; 
-    margin-right: 100px;
-    
-    
-  }
-  .projects {
-             /* Increase font size for the main heading */             /* Dark color for better visibility */
-    margin-bottom: 20px;     /* Space below the main heading */
+
+
+.projects {
+  /* Increase font size for the main heading */
+  /* Dark color for better visibility */
+  margin-bottom: 20px;
+  /* Space below the main heading */
 }
 
 .project-items h1 {
-    font-size: 2.5em;        /* Font size for the project headings */
-    color: #333;             /* Change color of project headings to aqua */
-    margin: 10px 0;         /* Space above and below each project heading */
+  font-size: 2.5em;
+  /* Font size for the project headings */
+  color: #333;
+  /* Change color of project headings to aqua */
+  margin: 10px 0;
+  /* Space above and below each project heading */
 }
 
 
@@ -115,7 +126,6 @@ body {/*For displaying the projects, make that when click the images, it loads a
   border-collapse: collapse;
   height: 600px;
   padding: 0;
-  border: 1px solid black;
 }
 
 
@@ -123,14 +133,15 @@ body {/*For displaying the projects, make that when click the images, it loads a
   border-collapse: collapse;
   justify-content: center;
   align-items: center;
-  flex-grow: 1; /* Allows the content table to take up the remaining space */
+  flex-grow: 1;
+  /* Allows the content table to take up the remaining space */
   text-align: center;
 }
 
 
 
 
-.contentArrows{
+.contentArrows {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,14 +150,16 @@ body {/*For displaying the projects, make that when click the images, it loads a
   font-size: 60px;
 
 }
-.contentArrows td{
+
+.contentArrows td {
   display: flex;
   align-items: top;
   justify-content: top;
-  
+
 }
-.contentArrows img{
-  
+
+.contentArrows img {
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -162,9 +175,9 @@ body {/*For displaying the projects, make that when click the images, it loads a
   height: 0;
   border-top: 80px solid transparent;
   border-bottom: 80px solid transparent;
-  border-right: 45px solid white; 
+  border-right: 45px solid white;
   transition: border-color 0.4s ease;
-  
+
 }
 
 .triangle-right {
@@ -176,17 +189,19 @@ body {/*For displaying the projects, make that when click the images, it loads a
   border-bottom: 80px solid transparent;
   border-left: 45px solid white;
   transition: border-color 0.4s ease;
-  
+
 }
-  .triangle-left:hover{
+
+.triangle-left:hover {
   border-right: 45px solid black;
 }
-.triangle-right:hover{
+
+.triangle-right:hover {
   border-left: 45px solid black;
 }
 
 
-.contentArrows p{
+.contentArrows p {
   position: absolute;
   bottom: 20px;
   font-weight: bold;
@@ -197,31 +212,31 @@ body {/*For displaying the projects, make that when click the images, it loads a
 .AB {
   color: black;
   line-height: 50px;
-  padding: 30px;  
+  padding: 30px;
   width: 85%;
-  
-}
-
-
-
-.contacting {
-  /* Use Flexbox to arrange child elements in a row */       /* Stack items vertically */
-align-items: center;      
-justify-content: center;
-margin: 20px ;   
-font-size: xx-large; 
-width: 45%;
-padding: 3px; 
 
 }
 
 
-.back{
+
+.contact_info {
+  /* Use Flexbox to arrange child elements in a row */
+  /* Stack items vertically */
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+  font-size: xx-large;
+  width: 45%;
+  padding: 3px;
+
+}
+
+
+.back {
   margin-left: auto;
   margin-right: auto;
   background-color: rgba(86, 157, 250, 0.289);
   border-radius: 50px;
   align-content: center;
-  
-}
 
+}

@@ -13,7 +13,7 @@ const rows = [row1, row2, row3];
             correct with the middle one. 
 
             might have to change the language selector to be on top, rather than on the left
-*/ 
+*/
 /*  MAYBE, include blender
 To put in content: aimlab, chess
                     calculator, weather app, quizapp, logo detection
@@ -26,16 +26,16 @@ function goTo(id) {
 }
 var currentImage = document.getElementById("contentImg");
 var desc = document.getElementById("desc");
-const images=["images/Aimlab.png","images/chessGame.png","images/guessTemp.png","images/rushHour.png","images/mots.png","images/countryQuiz.png"];
+const images = ["images/Aimlab.png", "images/chessGame.png", "images/guessTemp.png", "images/countryQuiz.png", "images/mots.png", "images/rushHour.png"];
 const description = [
-    "Made in Unity", 
+    "Made in Unity, game where you can train your aim",
     "Made in Unity, fully functional chess game. Plans to make it multiplayer",
     "Made with Python and Tkinter, using OpenWeatherMap API. Guess the temperature of a city",
+    "Made with Tkinter, using GeoNames API, an API with geographic data. Quiz about countries, cities and capitals.",
     "Made in school with JavaFX, recreation of the game Rush Hour",
-    "Made in school with JavaFX, recreation of the Crossword game",
-    "Made with Tkinter, using GeoNames API, an API with geographic data. Quiz about countries, cities and capitals."
+    "Made in school with JavaFX, recreation of the Crossword game"
 ];
-var index=0;
+var index = 0;
 /*
 function changeColor(item){
     for (let i = 0; i < rows.length; i++) {
@@ -55,27 +55,27 @@ function changeColor(item){
 }*/
 
 
-function arrowClick(change){
-    index+=change;
-    if (index<0) index=images.length-1;
+function arrowClick(change) {
+    index += change;
+    if (index < 0) index = images.length - 1;
     currentImage.src = images[index % images.length];
-    desc.innerHTML= description[index % images.length];
+    desc.innerHTML = description[index % images.length];
 }
 
 
 
-document.getElementById("buttonContact").addEventListener('click', function() {
+document.getElementById("buttonContact").addEventListener('click', function () {
     goTo("contactH1");
 });
 
-document.getElementById("buttonProjects").addEventListener('click', function() {
+document.getElementById("buttonProjects").addEventListener('click', function () {
     goTo("tables");
 });
 
-document.getElementById("left-arrow").addEventListener('click', function() {
+document.getElementById("left-arrow").addEventListener('click', function () {
     arrowClick(-1);
 });
-document.getElementById("right-arrow").addEventListener('click', function() {
+document.getElementById("right-arrow").addEventListener('click', function () {
     arrowClick(1);
 });
 
