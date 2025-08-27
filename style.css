@@ -2,6 +2,7 @@ body {
   /*For displaying the projects, make that when click the images, it loads a carrousel with the projects that i made in that. */
   /*the caroussel is just below the images and when click, goto caroussel*/
   background-color: rgba(110, 160, 236, 0.185);
+
 }
 
 
@@ -38,6 +39,7 @@ p {
   margin-top: 80px;
   width: 38%;
   padding: 0.02rem;
+  margin-bottom: 50px;
 
 
 }
@@ -61,7 +63,7 @@ p {
   margin-left: 20px;
   margin-top: 20px;
   border-color: rgba(86, 209, 250, 0.45);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
 
 }
 
@@ -69,31 +71,33 @@ p {
 
   background-color: rgba(86, 157, 250, 0.701);
   border-color: rgba(86, 157, 250, 0.701);
+  transform: translateY(-2px);
+
 
 }
 
 
 .images {
+
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
   /* or space-between */
-  gap: 10px;
+  gap: 20px 30px;
   /* spacing between images */
-  max-width: 1000px;
+  max-width: 800px;
   /* optional */
   margin: auto;
 }
 
 .images img {
-  margin-top: 30px;
+
   justify-content: center;
   display: flex;
-  width: 100px;
-  /* Set a smaller width */
-  height: 150px;
-  margin-left: 100px;
-  margin-right: 100px;
+
+  width: auto;
+  height: 120px;
+
   transition: transform 0.2s ease;
 }
 
@@ -125,7 +129,11 @@ p {
   margin: 100px;
   border-collapse: collapse;
   height: 600px;
+  width: 80vw;
   padding: 0;
+  position: relative;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
 
 
@@ -149,6 +157,7 @@ p {
   position: relative;
   font-size: 60px;
 
+
 }
 
 .contentArrows td {
@@ -163,57 +172,66 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80%;
-  height: 500px;
-
-}
-
-.triangle-left {
-  position: absolute;
-  left: 1%;
-  width: 0;
-  height: 0;
-  border-top: 80px solid transparent;
-  border-bottom: 80px solid transparent;
-  border-right: 45px solid white;
-  transition: border-color 0.4s ease;
-
-}
-
-.triangle-right {
-  position: absolute;
-  right: 1%;
-  width: 0;
-  height: 0;
-  border-top: 80px solid transparent;
-  border-bottom: 80px solid transparent;
-  border-left: 45px solid white;
-  transition: border-color 0.4s ease;
-
-}
-
-.triangle-left:hover {
-  border-right: 45px solid black;
-}
-
-.triangle-right:hover {
-  border-left: 45px solid black;
+  width: 60%;
+  height: auto;
+  max-height: 500px;
 }
 
 
-.contentArrows p {
-  position: absolute;
-  bottom: 20px;
-  font-weight: bold;
-  color: black;
+.arrow {
+  font-size: 200px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+
+
+}
+
+.arrow:hover {
+
+  color: #3498db
+}
+
+.arrow:nth-child(3):hover {
+  transform: translateX(4px);
+}
+
+.arrow:nth-child(1):hover {
+  transform: translateX(-4px);
+}
+
+
+
+
+
+
+.tables p {
+
+
+
+  font-weight: 600;
+  /* slightly less heavy than bold */
+  color: #111;
+  /* softer than pure black */
+
 }
 
 
 .AB {
+  display: flex;
+  flex-direction: column;
   color: black;
   line-height: 50px;
   padding: 30px;
-  width: 85%;
+  width: 70%;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 50px;
+
+}
+
+.AB p {
+  text-align: center;
+  width: 80%;
 
 }
 
@@ -224,7 +242,7 @@ p {
   /* Stack items vertically */
   align-items: center;
   justify-content: center;
-  margin: 20px;
+
   font-size: xx-large;
   width: 45%;
   padding: 3px;
@@ -238,5 +256,6 @@ p {
   background-color: rgba(86, 157, 250, 0.289);
   border-radius: 50px;
   align-content: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 
 }
