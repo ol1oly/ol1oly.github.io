@@ -1,67 +1,39 @@
-/*:root {
-  --bodyBackgroundColor: #f6fdff;
+:root {
+  --bodyBackgroundColor: #f9feff;
   --fontColor: #111827;
   --secFontColor: #4B5563;
-  
-  --primaryFont: 'Inter', sans-serif;
+  --primaryColor: rgba(86, 157, 250, 0.701);
+  --divsBackgroundColor: #eaf6ff;
+
+  --primaryFont: 'Georgia', sans-serif;
   --secondaryFont: 'Roboto', sans-serif;
 
-  --specialColor: rgba(86, 157, 250, 0.701);
 
-  --darkerSpecial: color-mix(in srgb, var(--specialColor) 80%, black 20%);
-  --lighterSpecial: color-mix(in srgb, var(--specialColor) 60%, white 40%);
+  --darkerSpecial: color-mix(in srgb, var(--primaryColor) 80%, black 20%);
+  --lighterSpecial: color-mix(in srgb, var(--primaryColor) 60%, white 40%);
 
   --buttonBorderColor: var(--darkerSpecial);
-  --buttonBackgroundColor: var(--divsBackgroundColor);
+  --buttonBackgroundColor: color-mix(in srgb, var(--primaryColor) 50%, white 50%);
+  --buttonHoverColor: var(--primaryColor);
 
 
-  --divsBackgroundColor: #F9FAFB;
-  --divsBorder: 3px solid var(--lighterSpecial);
-  --divsShadow: 0 0 0px var(--lighterSpecial);
+  --divsBorder: 0px solid var(--lighterSpecial);
+  --divsShadow: 0 0 4px rgba(144, 144, 144, 0.5);
+
+  --caretColor: black;
+  --caretHoverColor: var(--primaryColor);
 
 
-  --skillsBorder: 1px solid var(--lighterSpecial);
+  --skillsBorder: 3px solid var(--divsBackgroundColor);
   --skillsShadow: 0px 0px 0px var(--lighterSpecial);
   --skillsBackgroundColor: white;
 
   --linkColor: var(--darkerSpecial);
 
- 
-}*/
 
-:root {
-  --bodyBackgroundColor: #fdfeff;
-  /* soft sky blue */
-  --fontColor: black;
-  /* deep navy */
-  --secFontColor: #566072;
-  /* muted slate */
-  --primaryFont: 'Inter', sans-serif;
-  --secondaryFont: 'Roboto', sans-serif;
-
-  --specialColor: rgba(100, 200, 255, 0.7);
-  /* bright sky blue */
-
-  --darkerSpecial: rgba(70, 150, 200, 0.8);
-  /* darker sky blue */
-  --lighterSpecial: rgba(150, 220, 255, 0.6);
-  /* lighter sky blue */
-
-  --buttonBorderColor: rgba(70, 150, 200, 0.8);
-  --buttonBackgroundColor: #e6f2ff;
-  --buttonHoverColor: var(--lighterSpecial);
-  /* very light blue */
-
-  --divsBackgroundColor: #eaf6ff;
-  --divsBorder: 0px solid rgba(150, 220, 255, 0.6);
-  --divsShadow: 0 0 4px rgba(144, 144, 144, 0.5);
-
-  --skillsBorder: 3px solid var(--divsBackgroundColor);
-  --skillsShadow: 0 0 0px rgba(150, 220, 255, 0.5);
-  --skillsBackgroundColor: white;
-
-  --linkColor: rgba(70, 150, 200, 0.8);
 }
+
+
 
 
 body {
@@ -86,6 +58,7 @@ h1,
 h2,
 p,
 h3 {
+  font-family: var(--primaryFont);
   color: var(--fontColor);
 }
 
@@ -124,7 +97,7 @@ h3 {
 .button-container button:hover {
 
   background-color: var(--buttonHoverColor);
-  border-color: var(--specialColor);
+  border-color: var(--primaryColor);
   transform: translateY(-2px);
 
 
@@ -235,13 +208,14 @@ h3 {
   font-size: 200px;
   transition: all 0.4s ease;
   cursor: pointer;
+  color: var(--caretColor);
 
 
 }
 
 .arrow:hover {
 
-  color: var(--specialColor);
+  color: var(--caretHoverColor);
 }
 
 .arrow:nth-child(3):hover {
@@ -280,7 +254,7 @@ h3 {
   /* this one is text*/
   text-align: center;
   width: 80%;
-
+  font-style: san;
   line-height: 50px;
 
 }
