@@ -1,77 +1,141 @@
+/*:root {
+  --bodyBackgroundColor: #f6fdff;
+  --fontColor: #111827;
+  --secFontColor: #4B5563;
+  
+  --primaryFont: 'Inter', sans-serif;
+  --secondaryFont: 'Roboto', sans-serif;
+
+  --specialColor: rgba(86, 157, 250, 0.701);
+
+  --darkerSpecial: color-mix(in srgb, var(--specialColor) 80%, black 20%);
+  --lighterSpecial: color-mix(in srgb, var(--specialColor) 60%, white 40%);
+
+  --buttonBorderColor: var(--darkerSpecial);
+  --buttonBackgroundColor: var(--divsBackgroundColor);
+
+
+  --divsBackgroundColor: #F9FAFB;
+  --divsBorder: 3px solid var(--lighterSpecial);
+  --divsShadow: 0 0 0px var(--lighterSpecial);
+
+
+  --skillsBorder: 1px solid var(--lighterSpecial);
+  --skillsShadow: 0px 0px 0px var(--lighterSpecial);
+  --skillsBackgroundColor: white;
+
+  --linkColor: var(--darkerSpecial);
+
+ 
+}*/
+
+:root {
+  --bodyBackgroundColor: #fdfeff;
+  /* soft sky blue */
+  --fontColor: black;
+  /* deep navy */
+  --secFontColor: #566072;
+  /* muted slate */
+  --primaryFont: 'Inter', sans-serif;
+  --secondaryFont: 'Roboto', sans-serif;
+
+  --specialColor: rgba(100, 200, 255, 0.7);
+  /* bright sky blue */
+
+  --darkerSpecial: rgba(70, 150, 200, 0.8);
+  /* darker sky blue */
+  --lighterSpecial: rgba(150, 220, 255, 0.6);
+  /* lighter sky blue */
+
+  --buttonBorderColor: rgba(70, 150, 200, 0.8);
+  --buttonBackgroundColor: #e6f2ff;
+  --buttonHoverColor: var(--lighterSpecial);
+  /* very light blue */
+
+  --divsBackgroundColor: #eaf6ff;
+  --divsBorder: 0px solid rgba(150, 220, 255, 0.6);
+  --divsShadow: 0 0 4px rgba(144, 144, 144, 0.5);
+
+  --skillsBorder: 3px solid var(--divsBackgroundColor);
+  --skillsShadow: 0 0 0px rgba(150, 220, 255, 0.5);
+  --skillsBackgroundColor: white;
+
+  --linkColor: rgba(70, 150, 200, 0.8);
+}
+
+
 body {
   /*For displaying the projects, make that when click the images, it loads a carrousel with the projects that i made in that. */
   /*the caroussel is just below the images and when click, goto caroussel*/
-  background-color: rgba(110, 160, 236, 0.185);
-
+  background-color: var(--bodyBackgroundColor);
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-
 
 h1 {
-  color: black;
+
   font-weight: bold;
-  font-size: xxx-large;
+  font-size: 48px;
   text-align: center;
 }
 
-
-p {
-  color: rgb(14, 14, 14);
-  font-size: x-large;
-  text-align: center;
-  font-weight: bold;
+h1,
+h2,
+p,
+h3 {
+  color: var(--fontColor);
 }
+
+
 
 #profile_pic {
   display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: auto;
-
   width: 280px;
   height: auto;
   border-radius: 20px;
-  box-sizing: border-box;
-  overflow: hidden;
 }
 
-.experience {
-  /*specifies the label for the programming experience*/
-  margin-top: 80px;
-  width: 38%;
-  padding: 0.02rem;
-  margin-bottom: 50px;
-
-
-}
 
 .button-container {
   display: flex;
   justify-content: center;
-  /* Centers buttons horizontally */
-
-  /* Full viewport height for vertical centering */
+  gap: 20px;
+  margin-top: 20px;
 }
 
 
 .button-container button {
   font-size: x-large;
   text-align: center;
-  background-color: rgba(86, 157, 250, 0.289);
+  background-color: var(--buttonBackgroundColor);
   color: black;
   border-radius: 8px;
-  padding: 1%;
-  margin-left: 20px;
-  margin-top: 20px;
-  border-color: rgba(86, 209, 250, 0.45);
+  padding: 5%;
+  white-space: nowrap;
+  border-color: var(--buttonBorderColor);
   transition: all 0.3s ease;
 
 }
 
+
 .button-container button:hover {
 
-  background-color: rgba(86, 157, 250, 0.701);
-  border-color: rgba(86, 157, 250, 0.701);
+  background-color: var(--buttonHoverColor);
+  border-color: var(--specialColor);
   transform: translateY(-2px);
+
+
+}
+
+.experienceLabel {
+  /*specifies the label for the programming experience*/
+  margin-top: 80px;
+  padding: 0.2rem 1rem;
+  width: fit-content;
+  margin-bottom: 50px;
 
 
 }
@@ -82,70 +146,57 @@ p {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  /* or space-between */
+
   gap: 20px 30px;
   /* spacing between images */
   max-width: 800px;
-  /* optional */
-  margin: auto;
+  margin-bottom: 50px;
+
 }
 
-.images img {
-
-  justify-content: center;
+.icon-wrapper {
+  width: 130px;
+  /* slightly smaller for a sleek look */
+  height: 130px;
+  background-color: var(--skillsBackgroundColor);
+  /* circle background */
+  border-radius: 50%;
   display: flex;
-
-  width: auto;
-  height: 120px;
-
-  transition: transform 0.2s ease;
-}
-
-.images img:hover {
-  transform: scale(1.1);
-  transition: transform 0.2s ease;
-}
-
-
-.projects {
-  /* Increase font size for the main heading */
-  /* Dark color for better visibility */
-  margin-bottom: 20px;
-  /* Space below the main heading */
-}
-
-.project-items h1 {
-  font-size: 2.5em;
-  /* Font size for the project headings */
-  color: #333;
-  /* Change color of project headings to aqua */
-  margin: 10px 0;
-  /* Space above and below each project heading */
-}
-
-
-.tables {
-  display: flex;
-  margin: 100px;
-  border-collapse: collapse;
-  height: 600px;
-  width: 80vw;
-  padding: 0;
-  position: relative;
-  justify-content: flex-end;
-  align-items: flex-end;
-}
-
-
-.tables .content {
-  border-collapse: collapse;
-  justify-content: center;
   align-items: center;
-  flex-grow: 1;
-  /* Allows the content table to take up the remaining space */
-  text-align: center;
+  justify-content: center;
+  margin: 10px;
+  box-shadow: var(--skillsShadow);
+  border: var(--skillsBorder);
+  /* subtle shadow for depth */
+  transition: transform 0.2s ease;
 }
 
+.icon-wrapper img {
+  width: 70%;
+  /* image scales nicely inside circle */
+  height: auto;
+}
+
+.icon-wrapper:hover {
+  transform: translateY(-4px);
+  /* subtle lift on hover */
+
+}
+
+
+
+
+
+.imageCarousel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-top: 40px;
+  margin-bottom: 50px;
+  /* center everything horizontally */
+}
 
 
 
@@ -158,24 +209,26 @@ p {
   font-size: 60px;
 
 
-}
-
-.contentArrows td {
-  display: flex;
-  align-items: top;
-  justify-content: top;
 
 }
 
-.contentArrows img {
-
+#imageContainer {
+  width: 800px;
+  height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60%;
-  height: auto;
-  max-height: 500px;
+
+  overflow: hidden;
 }
+
+#imageContainer img {
+
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 
 
 .arrow {
@@ -188,39 +241,33 @@ p {
 
 .arrow:hover {
 
-  color: #3498db
+  color: var(--specialColor);
 }
 
 .arrow:nth-child(3):hover {
-  transform: translateX(4px);
+  transform: translateX(5px);
 }
 
 .arrow:nth-child(1):hover {
-  transform: translateX(-4px);
+  transform: translateX(-5px);
 }
 
 
+#desc {
+  /* this one is text*/
+  width: 800px;
+  /* same as container */
+  text-align: center;
+  /* push text to the end */
 
-
-
-
-.tables p {
-
-
-
-  font-weight: 600;
-  /* slightly less heavy than bold */
-  color: #111;
-  /* softer than pure black */
-
+  justify-self: center;
+  margin-top: 10px;
 }
 
 
 .AB {
   display: flex;
   flex-direction: column;
-  color: black;
-  line-height: 50px;
   padding: 30px;
   width: 70%;
   align-items: center;
@@ -229,9 +276,12 @@ p {
 
 }
 
-.AB p {
+.AB h2 {
+  /* this one is text*/
   text-align: center;
   width: 80%;
+
+  line-height: 50px;
 
 }
 
@@ -243,19 +293,24 @@ p {
   align-items: center;
   justify-content: center;
 
-  font-size: xx-large;
-  width: 45%;
-  padding: 3px;
+  width: fit-content;
+  padding: 10px 75px;
+}
 
+.contact_info a {
+
+  color: var(--linkColor)
 }
 
 
+
+
+
 .back {
-  margin-left: auto;
-  margin-right: auto;
-  background-color: rgba(86, 157, 250, 0.289);
+
+  background-color: var(--divsBackgroundColor);
   border-radius: 50px;
-  align-content: center;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--divsShadow);
+  border: var(--divsBorder);
 
 }
