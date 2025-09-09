@@ -242,7 +242,7 @@ h3 {
 .AB {
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 20px;
   width: 70%;
   align-items: center;
   justify-content: center;
