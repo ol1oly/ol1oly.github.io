@@ -70,6 +70,8 @@ document.getElementById("right-arrow").addEventListener('click', function () {
     arrowClick(1);
 });
 
+fetch("https://golfapp-1hsh.onrender.com/ping").then(res => console.log(res.status));
+
 
 
 
