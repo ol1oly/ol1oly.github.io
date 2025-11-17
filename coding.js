@@ -60,7 +60,7 @@ document.getElementById("buttonContact").addEventListener('click', function () {
 });
 
 document.getElementById("buttonProjects").addEventListener('click', function () {
-    goTo("/projects.html");
+    window.location.href = "projects.html"
 });
 
 document.getElementById("left-arrow").addEventListener('click', function () {
