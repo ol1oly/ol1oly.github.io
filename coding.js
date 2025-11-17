@@ -60,7 +60,7 @@ document.getElementById("buttonContact").addEventListener('click', function () {
 });
 
 document.getElementById("buttonProjects").addEventListener('click', function () {
-    goTo("projects");
+    goTo("/projects.html");
 });
 
 document.getElementById("left-arrow").addEventListener('click', function () {
@@ -71,6 +71,7 @@ document.getElementById("right-arrow").addEventListener('click', function () {
 });
 
 fetch("https://golfapp-1hsh.onrender.com/ping").then(res => console.log(res.status));
+
 
 
 
