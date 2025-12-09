@@ -69,8 +69,8 @@ document.getElementById("left-arrow").addEventListener('click', function () {
 document.getElementById("right-arrow").addEventListener('click', function () {
     arrowClick(1);
 });
-
-fetch("https://golfapp-1hsh.onrender.com/ping").then(res => console.log(res.status));
+fetch("https://connect-4-game-solver.onrender.com/").then(res => console.log("connect4: " + res.status));
+fetch("https://golfapp-1hsh.onrender.com/ping").then(res => console.log("golf app: " + res.status));
 
 
 
