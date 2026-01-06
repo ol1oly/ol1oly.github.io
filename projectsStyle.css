@@ -1,11 +1,11 @@
 :root {
     --p-font-size: 16px;
-    --h2-font-size: 1.3rem;
-    --p-font-weight: 510;
+    --h2-font-size: 1.5rem;
+    --p-font-weight: 400;
 }
 
 body {
-    font-family: 'Georgia', sans-serif;
+    font-family: 'Lato', 'Roboto', 'Open Sans', 'Inter', 'Source Sans Pro', 'Work Sans', sans-serif;
 }
 
 #title {
@@ -24,6 +24,12 @@ body {
 img {
     height: 190px;
     width: 325px;
+    border-radius: 5px;
+    transition: .2s;
+}
+
+img:hover {
+    transform: scale(1.03);
 }
 
 #projectsContainer {
@@ -53,9 +59,9 @@ img {
     padding-right: 20px;
     border-radius: 7%;
     gap: 10px;
-    background-color: rgb(243, 243, 243);
+    background-color: #f5f5f5;
     /*horizontal vertical blurRadius*/
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     justify-content: space-between;
 
 
@@ -68,8 +74,9 @@ h2 {
     text-align: center;
     margin-bottom: 0;
     min-height: 2rem;
-    font-weight: 700;
+    font-weight: 800;
     font-size: var(--h2-font-size);
+    font-family: 'Montserrat', 'Poppins', 'Raleway', 'Oswald', 'Nunito', sans-serif;
 }
 
 p {
@@ -82,27 +89,29 @@ p {
 }
 
 .projectButton {
-    background: #dfedf5;
+    background: #6fa3d8;
+    /* more vibrant blue */
+    color: white;
     border: none;
-    border-radius: 8px;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.95rem;
-    font-weight: 600;
+    border-radius: 12px;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    font-weight: 700;
     margin-top: 0.8rem;
     cursor: pointer;
     transition: 0.2s ease;
     text-align: center;
     text-decoration: none;
-    color: black;
-
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .projectButton:hover {
-    background: #bfd2e5;
-    transform: translateY(-2px);
+    background: #5b8ac4;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
 
 .description {
-    font-size: 15px;
+    font-size: var(--p-font-size);
 }
