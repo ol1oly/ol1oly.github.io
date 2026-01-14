@@ -23,7 +23,7 @@ document.getElementById("buttonContact").addEventListener('click', function () {
 });
 
 document.getElementById("buttonProjects").addEventListener('click', function () {
-    window.location.href = "projects.html"
+    goTo("projectsSection");
 });
 
 
