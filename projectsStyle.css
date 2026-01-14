@@ -2,95 +2,77 @@
     --p-font-size: 16px;
     --h2-font-size: 1.5rem;
     --p-font-weight: 400;
+    --container-font-family: 'Lato', sans-serif;
 }
 
-body {
-    font-family: 'Lato', 'Roboto', 'Open Sans', 'Inter', 'Source Sans Pro', 'Work Sans', sans-serif;
+.title-container,
+.projects-container {
+    font-family: var(--container-font-family);
 }
 
-#title {
-    text-align: left;
-    width: 100%;
-    padding-left: 30px;
-
-}
-
-#title h1 {
+/* Title */
+.title-text {
     font-size: 50px;
-    margin-bottom: 15px;
+    margin: 0 0 15px 30px;
+    text-align: left;
 }
 
-
-img {
-    height: 190px;
-    width: 325px;
-    border-radius: 5px;
-    transition: .2s;
-}
-
-img:hover {
-    transform: scale(1.03);
-}
-
-#projectsContainer {
+/* Projects container */
+.projects-container {
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    width: 100%;
-    box-sizing: border-box;
-    padding-left: 50px;
-    padding-right: 50px;
-    gap: 50px 40px;
-    flex-direction: row;
     flex-wrap: wrap;
-    padding-top: 50px;
-    align-items: stretch;
-
-
+    gap: 50px 40px;
+    justify-content: center;
+    padding: 50px;
+    box-sizing: border-box;
 }
 
-.container {
+/* Project card */
+.project-card {
     display: flex;
     flex-direction: column;
     width: 330px;
-    /*height: 480px;*/
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 20px;
     border-radius: 7%;
-    gap: 10px;
     background-color: #f5f5f5;
-    /*horizontal vertical blurRadius*/
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    gap: 10px;
     justify-content: space-between;
-
-
-
-
 }
 
-
-h2 {
+/* Project title */
+.project-title {
     text-align: center;
-    margin-bottom: 0;
-    min-height: 2rem;
     font-weight: 800;
     font-size: var(--h2-font-size);
-    font-family: 'Montserrat', 'Poppins', 'Raleway', 'Oswald', 'Nunito', sans-serif;
+    margin: 0;
+    min-height: 2rem;
+    font-family: var(--container-font-family);
 }
 
-p {
-    flex-grow: 1;
-    text-align: start;
-    margin: 0px;
-    margin-top: 10px;
+/* Images */
+.project-image {
+    height: 190px;
+    width: 325px;
+    border-radius: 5px;
+    transition: transform 0.2s;
+}
+
+.project-image:hover {
+    transform: scale(1.03);
+}
+
+/* Text inside project card */
+.project-text {
+    font-family: var(--container-font-family);
+    margin: 10px 0 0 0;
     font-size: var(--p-font-size);
     font-weight: var(--p-font-weight);
 }
 
-.projectButton {
+/* Buttons */
+.project-button {
     background: #6fa3d8;
-    /* more vibrant blue */
     color: white;
     border: none;
     border-radius: 12px;
@@ -99,19 +81,47 @@ p {
     font-weight: 700;
     margin-top: 0.8rem;
     cursor: pointer;
-    transition: 0.2s ease;
     text-align: center;
     text-decoration: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: 0.2s ease;
 }
 
-.projectButton:hover {
+.project-button:hover {
     background: #5b8ac4;
     transform: translateY(-3px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
+.seeAll {
+    width: 50%;
+    height: 50px;
+    font-size: 2rem;
+    font-weight: 700;
+    background-color: var(--buttonHoverColor);
 
-.description {
-    font-size: var(--p-font-size);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seeAll p {
+    color: white;
+    font-family: var(--container-font-family);
+}
+
+.seeAll:hover {
+    background: #6fa3d8;
+
+}
+
+.projects-parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+    padding-bottom: 50px;
+
+
 }

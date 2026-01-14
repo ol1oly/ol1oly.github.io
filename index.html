@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="projectsStyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Work+Sans:wght@400;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&family=Raleway:wght@400;700&family=Oswald:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 
@@ -43,19 +44,38 @@
         <div class="icon-wrapper"><img src="images/cSharp.png" alt="CSharp"></div>
     </div>
 
-
-    <div id="projects" class="imageCarousel back">
-        <div class="contentArrows">
-            <i class="arrow fa-solid fa-caret-left" id="left-arrow"> </i>
-
-            <div id="imageContainer">
-                <img src="images/Aimlab.png" id="contentImg" alt="Photo_of_me">
-            </div>
-            <i class="arrow fa-solid fa-caret-right" id="right-arrow"> </i>
+    <div class="projects-parent back">
+        <div class="projects-container ">
+         <div class="project-card">
+            <h2 class="project-title">GolfBro</h2>
+            <img class="project-image" src="images/golfBroSmaller.png" alt="">
+            <p class="project-text" data-type="description">A web app for golfers to meet and chat in real time.</p>
+            <p class="project-text" data-type="skills">web development, APIs, authentication, databases</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> nodeJs, EJS, express, MySQL, html, css, socket.IO, cloudinary</p>
+            <a class="project-button" href="https://golfapp-1hsh.onrender.com/" target="_blank">View project</a>
         </div>
-        <h2 id="desc">Made in Unity, game where you can train your aim</h2>
 
+        <div class="project-card">
+            <h2 class="project-title">Waypoints</h2>
+            <img class="project-image" src="images/waypoints.webp" alt="">
+            <p class="project-text" data-type="description">A Unity asset that lets developers make GameObjects follow custom paths.</p>
+            <p class="project-text" data-type="skills">software design, clean coding</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> Unity, C#</p>
+            <a class="project-button" href="https://assetstore.unity.com/packages/tools/level-design/waypoints-323240" target="_blank">View project</a>
+        </div>
+
+        <div class="project-card">
+            <h2 class="project-title">Connect4 AI</h2>
+            <img class="project-image" src="images/connect4.png" alt="">
+            <p class="project-text" data-type="description">Final project of the Accelerated introduction to Machine Learning course.</p>
+            <p class="project-text" data-type="skills">Hands-on experience applying ML concepts in an interactive AI application.</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> Python, Fastapi, React, Vite, DaisyUI, Tailwind</p>
+            <a class="project-button" target="_blank" href="https://connect-4-game-solver.onrender.com/">View project</a>
+        </div>
     </div>
+        <a class="project-button seeAll" href="projects.html" target="_self"><p>See all projects</p></a>
+    </div>
+    
 
 
     <div class="AB back">

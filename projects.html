@@ -4,99 +4,101 @@
 <head>
     <link rel="stylesheet" href="projectsStyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Work+Sans:wght@400;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&family=Raleway:wght@400;700&family=Oswald:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div id="title"> <h1 id="title">My Projects</h1> </div>
+    <div class="title-container">
+        <h1 class="title-text">My Projects</h1>
+    </div>
     
-    <div id="projectsContainer">
+    <div class="projects-container">
 
-    <div class = "container">
-        <h2>GolfBro</h2>
-        <img src="images/golfBroSmaller.png" alt="">
-        <p class="description" >A web app for golfers to meet and chat in real time.</p>
-        <p>web development, APIs , authentication, databases </p>
-        <p><strong>made with:</strong> nodeJs, EJS, express, MySQL, html, css, socket.IO, cloudinary</p>
-        <a class="projectButton" href="https://golfapp-1hsh.onrender.com/" target="_blank" >View project</a>
- 
-    </div>
-    <div class = "container">
-        <h2>Waypoints</h2>
-        <img src="images/waypoints.webp" alt="">
-        <p class="description" >A Unity asset that lets developers make GameObjects follow custom paths.  </p>
-        <p>software design, clean coding  </p>
-        <p><strong>made with:</strong> Unity, C#</p>
-        <a class="projectButton" href="https://assetstore.unity.com/packages/tools/level-design/waypoints-323240" target="_blank">View project</a>
-    </div>
+        <div class="project-card">
+            <h2 class="project-title">GolfBro</h2>
+            <img class="project-image" src="images/golfBroSmaller.png" alt="">
+            <p class="project-text" data-type="description">A web app for golfers to meet and chat in real time.</p>
+            <p class="project-text" data-type="skills">web development, APIs, authentication, databases</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> nodeJs, EJS, express, MySQL, html, css, socket.IO, cloudinary</p>
+            <a class="project-button" href="https://golfapp-1hsh.onrender.com/" target="_blank">View project</a>
+        </div>
 
-    <div class = "container">
-        <h2>Lost in Hell</h2>
-        <img class = "projectImage" src="images/lostInHell.png" alt="">
-        <p class="description" >A game made for the GDM studios competition of winter 2025. </p>
-        <p>teamwork, software design</p>
-        <p><strong>made with:</strong> Unity, C#</p>
-        <a class="projectButton" href="https://acaciesong.itch.io/lostinhell" target="_blank">Play game</a>
-    </div>
-    <div class = "container">
-        <h2>Connect4 AI</h2>
-        <img class = "projectImage" src="images\connect4.png" alt="">
-        <p class="description" >Final project of the Accelerated introduction to Machine Learning course. </p>
-        <p>Hands-on experience applying ML concepts in an interactive AI application.</p>
-        <p><strong>made with:</strong> python, Fastapi, React, Vite, DaisyUI, Tailwind</p>
-        <a class="projectButton" target="_blank" href="https://connect-4-game-solver.onrender.com/">View project</a>        
-    </div>
+        <div class="project-card">
+            <h2 class="project-title">Waypoints</h2>
+            <img class="project-image" src="images/waypoints.webp" alt="">
+            <p class="project-text" data-type="description">A Unity asset that lets developers make GameObjects follow custom paths.</p>
+            <p class="project-text" data-type="skills">software design, clean coding</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> Unity, C#</p>
+            <a class="project-button" href="https://assetstore.unity.com/packages/tools/level-design/waypoints-323240" target="_blank">View project</a>
+        </div>
 
-    <div class = "container">
-        <h2>Rush Hour</h2>
-        <img class = "projectImage" src="images/rushHour.png" alt="">
-        <p class="description" >Rush Hour remake during CEGEP with level selection, collision detection, and drag-and-drop gameplay.</p>
-        <p>reading files, JavaFX event handling</p>
-        <p><strong>made with:</strong> JavaFX, Java </p>
-        <a class="projectButton" href="" target="_blank">check it out</a>
-        
-    </div>
+        <div class="project-card">
+            <h2 class="project-title">Lost in Hell</h2>
+            <img class="project-image" src="images/lostInHell.png" alt="">
+            <p class="project-text" data-type="description">A game made for the GDM studios competition of winter 2025.</p>
+            <p class="project-text" data-type="skills">teamwork, software design</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> Unity, C#</p>
+            <a class="project-button" href="https://acaciesong.itch.io/lostinhell" target="_blank">Play game</a>
+        </div>
 
-    <div class = "container">
-        <h2>Crossword game</h2>
-        <img class = "projectImage" src="images/mots.png" alt="">
-        <p class="description" >A crossword game remake made during CEGEP, with level selection and three themes.</p>
-        <p>reading files, JavaFX event handling and designing UI</p>
-        <p><strong>made with:</strong> JavaFX, Java</p>
-        <a class="projectButton" href="" target="_blank">check it out</a>
-        
-    </div>
+        <div class="project-card">
+            <h2 class="project-title">Connect4 AI</h2>
+            <img class="project-image" src="images/connect4.png" alt="">
+            <p class="project-text" data-type="description">Final project of the Accelerated introduction to Machine Learning course.</p>
+            <p class="project-text" data-type="skills">Hands-on experience applying ML concepts in an interactive AI application.</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> Python, Fastapi, React, Vite, DaisyUI, Tailwind</p>
+            <a class="project-button" target="_blank" href="https://connect-4-game-solver.onrender.com/">View project</a>
+        </div>
 
+        <div class="project-card">
+            <h2 class="project-title">Rush Hour</h2>
+            <img class="project-image" src="images/rushHour.png" alt="">
+            <p class="project-text" data-type="description">Rush Hour remake during CEGEP with level selection, collision detection, and drag-and-drop gameplay.</p>
+            <p class="project-text" data-type="skills">reading files, JavaFX event handling</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> JavaFX, Java</p>
+            <a class="project-button" href="#" target="_blank">Check it out</a>
+        </div>
 
-    <div class = "container">
-        <h2>Aim trainer</h2>
-        <img class = "projectImage" src="images/Aimlab.png" alt="">
-        <p class="description" >FPS minigame to train aim with extensive customization.</p>
-        <p><strong>made with:</strong> Unity, C#</p>
-        <a class="projectButton" href="https://github.com/ol1oly/Chess-3D-Unity" target="_blank">check it out</a>
-  
-    </div>
+        <div class="project-card">
+            <h2 class="project-title">Crossword Game</h2>
+            <img class="project-image" src="images/mots.png" alt="">
+            <p class="project-text" data-type="description">A crossword game remake made during CEGEP, with level selection and three themes.</p>
+            <p class="project-text" data-type="skills">reading files, JavaFX event handling, designing UI</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> JavaFX, Java</p>
+            <a class="project-button" href="#" target="_blank">Check it out</a>
+        </div>
 
+        <div class="project-card">
+            <h2 class="project-title">Aim Trainer</h2>
+            <img class="project-image" src="images/Aimlab.png" alt="">
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> Unity, C#</p>
+            <a class="project-button" href="https://github.com/ol1oly/Chess-3D-Unity" target="_blank">Check it out</a>
+        </div>
 
-    <div class = "container">
-        <h2>Chess logic</h2>
-        <img class = "projectImage" src="images/chessGame.png" alt="">
-        <p class="description" >A fully functional chess game, playable by two players on the same computer</p>
-        <p><strong>made with:</strong></strong> Unity, C#</p>
-        <a class="projectButton" href="https://github.com/ol1oly/Chess-3D-Unity" target="_blank">check it out</a>
-    </div>
+        <div class="project-card">
+            <h2 class="project-title">Chess Logic</h2>
+            <img class="project-image" src="images/chessGame.png" alt="">
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> Unity, C#</p>
+            <a class="project-button" href="https://github.com/ol1oly/Chess-3D-Unity" target="_blank">Check it out</a>
+        </div>
 
- 
+        <div class="project-card">
+            <h2 class="project-title">Temperature Guesser</h2>
+            <img class="project-image" src="images/guessTemp.png" alt="">
+            <p class="project-text" data-type="description">Minigame to guess the temperature of cities, with a favorites list.</p>
+            <p class="project-text" data-type="skills">Using an API, file writing/reading</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> Python, TKinter, OpenWeatherMapAPI</p>
+            <a class="project-button" href="https://github.com/ol1oly/Weather-Quiz" target="_blank">Check it out</a>
+        </div>
 
-    <div class = "container">
-        <h2>Temperature guesser</h2>
-        <img class = "projectImage" src="images/guessTemp.png" alt="">
-        <p class="description" >Minigame to guess the temperature of cities, with a favorites list.</p>
-        <p>Using an API, file writing/reading</p>
-        <p><strong>made with:</strong> Python, TKinter, OpenWeatherMapAPI </p>
-        <a class="projectButton" target="_blank"  href="https://github.com/ol1oly/Weather-Quiz" >check it out</a>
-    </div>
+        <div class="project-card">
+            <h2 class="project-title">Geographic Quiz</h2>
+            <img class="project-image" src="images/countryQuiz.png" alt="">
+            <p class="project-text" data-type="description">Quiz on countries, cities, and capitals with maps and personalization.</p>
+            <p class="project-text" data-type="skills">Using an API, file writing/reading, geocoding</p>
+            <p class="project-text" data-type="stack"><strong>Made with:</strong> Python, TKinter, Geonames API</p>
+            <a class="project-button" href="https://github.com/ol1oly/Weather-Quiz" target="_blank">Check it out</a>
+        </div>
 
     <div class = "container">
         <h2>geographic quiz</h2>
@@ -106,7 +108,6 @@
         <p><strong>made with:</strong> Python, TKinter, Geonames API </p>
         <a class="projectButton" target="_blank" href="https://github.com/ol1oly/Weather-Quiz">check it out</a>        
     </div>
-</div>
 </body>
 
 </html>
