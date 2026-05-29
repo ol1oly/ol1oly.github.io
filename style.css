@@ -114,117 +114,172 @@ h3 {
 }
 
 
-.images {
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-
-  gap: 20px 30px;
-  /* spacing between images */
-  max-width: 800px;
-  margin-bottom: 50px;
-
-}
-
-.icon-wrapper {
-  width: 130px;
-  /* slightly smaller for a sleek look */
-  height: 130px;
-  background-color: var(--skillsBackgroundColor);
-  /* circle background */
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px;
-  box-shadow: var(--skillsShadow);
-  border: var(--skillsBorder);
-  /* subtle shadow for depth */
-  transition: transform 0.2s ease;
-}
-
-.icon-wrapper img {
-  width: 70%;
-  /* image scales nicely inside circle */
-  height: auto;
-}
-
-.icon-wrapper:hover {
-  transform: translateY(-4px);
-  /* subtle lift on hover */
-
-}
-
-
-
-
-
-.imageCarousel {
+.skills-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-left: 100px;
-  padding-right: 100px;
-  padding-top: 40px;
+  gap: 4px;
+  width: 90%;
+  max-width: 720px;
   margin-bottom: 50px;
-  /* center everything horizontally */
 }
 
-
-
-.contentArrows {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-  position: relative;
-  font-size: 60px;
-
-
-
+/* Each group is a collapsible <details> accordion */
+.skill-group {
+  width: 100%;
+  max-width: 720px;
+  border-bottom: 1px solid var(--lighterSpecial);
 }
 
-#imageContainer {
-  width: 800px;
-  height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  overflow: hidden;
-}
-
-#imageContainer img {
-
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-
-
-.arrow {
-  font-size: 200px;
-  transition: all 0.4s ease;
+.skill-group-label {
+  list-style: none;
   cursor: pointer;
-  color: var(--caretColor);
-
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--primaryFont);
+  color: var(--secFontColor);
+  font-size: 1.15rem;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  padding: 12px 0;
+  transition: color 0.2s ease;
 }
 
-.arrow:hover {
-
-  color: var(--caretHoverColor);
+/* hide native disclosure triangles */
+.skill-group-label::-webkit-details-marker {
+  display: none;
 }
 
-.arrow:nth-child(3):hover {
-  transform: translateX(5px);
+.skill-group-label:hover {
+  color: var(--fontColor);
 }
 
-.arrow:nth-child(1):hover {
-  transform: translateX(-5px);
+.skill-caret {
+  width: 0;
+  height: 0;
+  border-left: 7px solid currentColor;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  transition: transform 0.2s ease;
 }
+
+.skill-group[open] .skill-caret {
+  transform: rotate(90deg);
+}
+
+.skill-count {
+  font-weight: normal;
+  font-size: 0.85rem;
+  color: var(--darkerSpecial);
+  background: var(--divsBackgroundColor);
+  border-radius: 999px;
+  padding: 1px 10px;
+}
+
+.skill-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 22px 34px;
+  padding: 8px 0 22px 0;
+}
+
+.skill-group[open] .skill-row {
+  animation: skillFade 0.25s ease;
+}
+
+@keyframes skillFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.skill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 96px;
+  text-decoration: none;
+}
+
+.skill img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+/* Font Awesome glyph used where there is no local logo (e.g. GitHub) */
+.skill i {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  font-size: 46px;
+  color: #374151;
+  transition: transform 0.2s ease;
+}
+
+.skill figcaption {
+  font-family: var(--primaryFont);
+  color: var(--secFontColor);
+  font-size: 0.95rem;
+  /* label stays hidden until hover */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.skill:hover img,
+.skill:hover i {
+  transform: translateY(-4px);
+  /* subtle lift on hover */
+}
+
+.skill:hover figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Text wordmark for tech with no logo (Next.js, SQL, FastAPI, ...) */
+.skill--pill {
+  width: auto;
+}
+
+.skill-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+  padding: 0 20px;
+  border-radius: 14px;
+  background-color: var(--skillsBackgroundColor);
+  border: 2px solid var(--lighterSpecial);
+  box-shadow: var(--divsShadow);
+  font-family: var(--primaryFont);
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--fontColor);
+  white-space: nowrap;
+  transition: transform 0.2s ease;
+}
+
+.skill--pill:hover .skill-pill {
+  transform: translateY(-4px);
+}
+
+
+
 
 
 #desc {

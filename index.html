@@ -29,65 +29,12 @@
     </div>
 
 
-    <div class="images">
-        <a href="https://www.mcgill.ca/study/2024-2025/courses/comp-251" target="_blank">
-            <div class="icon-wrapper"><img src="images/java2.png" alt="java"></div>
-        </a>
-
-        <a href="https://acaciesong.itch.io/lostinhell" target="_blank">
-            <div class="icon-wrapper"><img src="images/uni.webp" alt="unity"></div>
-        </a>
-
-        <a href="https://github.com/ol1oly/Weather-Quiz" target="_blank">
-            <div class="icon-wrapper"><img src="images/python.webp" alt="python"></div>
-        </a>
-
-        <div class="icon-wrapper"><img src="images/godo.png" alt="godot"></div>
-        <div class="icon-wrapper"><img src="images/javascript.webp" alt="CSharp"></div>
-        <div class="icon-wrapper"><img src="images/bash.png" alt="Bash"></div>
-        <div class="icon-wrapper"><img src="images/nodeJs.png" alt="NodeJs"></div>
-        <div class="icon-wrapper"><img src="images/cSharp.png" alt="CSharp"></div>
-    </div>
+    <div class="skills-wrap" data-skills></div>
 
     <div class="projects-parent back" id="projectsSection">
-        <div class="projects-container ">
-            <div class="project-card">
-                <h2 class="project-title">GolfBro</h2>
-                <img class="project-image" src="images/golfBroSmaller.png" alt="">
-                <p class="project-text" data-type="description">A web app for golfers to meet and chat in real time.</p>
-                <p class="project-text" data-type="skills">web development, APIs, authentication, databases</p>
-                <p class="project-text" data-type="stack"><strong>Made with:</strong> nodeJs, EJS, express, MySQL, html,
-                    css, socket.IO, cloudinary</p>
-                <a class="project-button" href="https://golfapp-1hsh.onrender.com/" target="_blank">View project</a>
-            </div>
-
-            <div class="project-card">
-                <h2 class="project-title">Waypoints</h2>
-                <img class="project-image" src="images/waypoints.webp" alt="">
-                <p class="project-text" data-type="description">A Unity asset that lets developers make GameObjects
-                    follow custom paths.</p>
-                <p class="project-text" data-type="skills">software design, clean coding</p>
-                <p class="project-text" data-type="stack"><strong>Made with:</strong> Unity, C#</p>
-                <a class="project-button"
-                    href="https://assetstore.unity.com/packages/tools/level-design/waypoints-323240"
-                    target="_blank">View project</a>
-            </div>
-
-            <div class="project-card">
-                <h2 class="project-title">Connect4 AI</h2>
-                <img class="project-image" src="images/connect4.png" alt="">
-                <p class="project-text" data-type="description">Final project of the Accelerated introduction to Machine
-                    Learning course.</p>
-                <p class="project-text" data-type="skills">Hands-on experience applying ML concepts in an interactive AI
-                    application.</p>
-                <p class="project-text" data-type="stack"><strong>Made with:</strong> Python, Fastapi, React, Vite,
-                    DaisyUI, Tailwind</p>
-                <a class="project-button" target="_blank" href="https://connect-4-game-solver.onrender.com/">View
-                    project</a>
-            </div>
-        </div>
-        <a class="project-button seeAll" href="projects.html" target="_self">
-            <p>See all projects</p>
+        <div class="projects-container" data-projects="featured"></div>
+        <a class="seeAll " href="projects.html" target="_self">
+            <p>See All</p>
         </a>
     </div>
 
@@ -124,6 +71,8 @@
 
 
 
+    <script src="skills.js"></script>
+    <script src="projects.js"></script>
     <script src="./coding.js"></script>
 </body>
 
