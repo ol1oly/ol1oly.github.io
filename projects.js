@@ -8,7 +8,7 @@ const PROJECTS = [
         stack: "nodeJs, EJS, express, MySQL, html, css, socket.IO, cloudinary",
         link: "https://golfapp-1hsh.onrender.com/",
         linkText: "View project",
-        year: "",
+        year: "2025",
         role: ""
     },
     {
@@ -20,7 +20,7 @@ const PROJECTS = [
         stack: "Unity, C#",
         link: "https://assetstore.unity.com/packages/tools/level-design/waypoints-323240",
         linkText: "View project",
-        year: "",
+        year: "2025",
         role: ""
     },
     {
@@ -32,18 +32,29 @@ const PROJECTS = [
         stack: "Python, Fastapi, React, Vite, DaisyUI, pytorch, numpy, Tailwind",
         link: "https://connect-4-game-solver.onrender.com/",
         linkText: "View project",
-        year: "",
+        year: "2023",
+        role: ""
+    },
+    {
+        title: "Abyssal Dive",
+        image: "images/fish.png",
+        description: "A game made for the GDM studios competition of winter 2026. Won best theme integration",
+        skills: "Game/software design",
+        stack: "Unity, C#",
+        link: "https://o1loly.itch.io/abyssal-dive",
+        linkText: "Play game",
+        year: "2026",
         role: ""
     },
     {
         title: "Lost in Hell",
         image: "images/lostInHell.png",
         description: "A game made for the GDM studios competition of winter 2025.",
-        skills: "teamwork, software design",
+        skills: "Game/software design",
         stack: "Unity, C#",
         link: "https://acaciesong.itch.io/lostinhell",
         linkText: "Play game",
-        year: "",
+        year: "2025",
         role: ""
     },
     {
@@ -54,7 +65,7 @@ const PROJECTS = [
         stack: "Python, Fastapi, React, Vite, DaisyUI, Tailwind",
         link: "https://devpost.com/software/rubiksmagic",
         linkText: "View project",
-        year: "",
+        year: "2026",
         role: ""
     },
     {
@@ -65,18 +76,18 @@ const PROJECTS = [
         stack: "JavaFX, Java",
         link: "#",
         linkText: "Check it out",
-        year: "",
+        year: "2023",
         role: ""
     },
     {
         title: "Crossword Game",
         image: "images/mots.png",
         description: "A crossword game remake made during CEGEP, with level selection and three themes.",
-        skills: "reading files, JavaFX event handling, designing UI",
+        skills: "reading files, JavaFX event handling, UI design",
         stack: "JavaFX, Java",
         link: "#",
         linkText: "Check it out",
-        year: "",
+        year: "2023",
         role: ""
     },
     {
@@ -87,7 +98,7 @@ const PROJECTS = [
         stack: "Unity, C#",
         link: "https://github.com/ol1oly/Chess-3D-Unity",
         linkText: "Check it out",
-        year: "",
+        year: "2024",
         role: ""
     },
     {
@@ -98,7 +109,7 @@ const PROJECTS = [
         stack: "Unity, C#",
         link: "https://github.com/ol1oly/Chess-3D-Unity",
         linkText: "Check it out",
-        year: "",
+        year: "2024",
         role: ""
     },
     {
@@ -109,7 +120,7 @@ const PROJECTS = [
         stack: "Python, TKinter, OpenWeatherMapAPI",
         link: "https://github.com/ol1oly/Weather-Quiz",
         linkText: "Check it out",
-        year: "",
+        year: "2024",
         role: ""
     },
     {
@@ -120,7 +131,7 @@ const PROJECTS = [
         stack: "Python, TKinter, Geonames API",
         link: "https://github.com/ol1oly/Weather-Quiz",
         linkText: "Check it out",
-        year: "",
+        year: "2024",
         role: ""
     }
 ];
@@ -203,7 +214,7 @@ function openModal(p) {
     desc.textContent = p.description || "";
     desc.style.display = p.description ? "" : "none";
 
-    setRow(m.querySelector(".modal-skills"), "What I worked on:", p.skills);
+    setRow(m.querySelector(".modal-skills"), "Skills:", p.skills);
     const meta = [p.role, p.year].filter(Boolean).join(" · ");
     setRow(m.querySelector(".modal-meta"), "", meta);
     setRow(m.querySelector(".modal-stack"), "Made with:", p.stack);
