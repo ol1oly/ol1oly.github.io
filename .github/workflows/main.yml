@@ -1,0 +1,11 @@
+name: renderCurl
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+jobs:
+    check:
+      runs-on: ubuntu-latest
+      steps:
+        - run: curl --parallel --parallel-immediate https://golfapp-1hsh.onrender.com/ https://connect-4-game-solver.onrender.com/
