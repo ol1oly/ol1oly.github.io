@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-"""Check Unity's Greenhouse job board for early-career SOFTWARE roles in Montreal.
+"""Fail if Unity's Greenhouse board has a NEW early-career software role in Montreal.
 
-Exit codes (GitHub treats any non-zero as a failed run):
-    0  no NEW matching roles (nothing found, or all matches already seen) -> passes
-    1  one or more NEW matching roles                                     -> fails (alert)
-    2  could not fetch/parse the board                                    -> fails (broken check)
-
-Everything is configurable via environment variables.
+Exit codes:
+    0  no new matching roles (nothing found, or all matches already seen)
+    1  one or more new matching roles found
+    2  could not fetch or parse the board
 """
 
 import html
+import json
 import os
 import re
 import sys
@@ -19,8 +18,6 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 
 BOARD = os.environ.get("GREENHOUSE_BOARD", "unity3d")
-# Greenhouse's edge serves a 404 to requests that don't look like a browser, and
-# the embed is mirrored on two hosts. Try each in turn with browser-like headers.
 EMBED_URLS = [
     u.strip()
     for u in os.environ.get(
@@ -48,39 +45,30 @@ def _keywords(env_name, default):
     return [k.strip().lower() for k in os.environ.get(env_name, default).split(",") if k.strip()]
 
 
-# A role must match a keyword from EACH of these three groups to count.
 LOCATION_KEYWORDS = _keywords("LOCATION_KEYWORDS", "montreal,montréal")
 EARLY_CAREER_KEYWORDS = _keywords(
     "EARLY_CAREER_KEYWORDS",
-    "early career,student,intern,internship,stagiaire,new grad,"
+    "early career,student,intern,internship,stagiaire,stage,new grad,"
     "new graduate,graduate,apprentice,co-op,coop,campus,junior",
 )
 SOFTWARE_KEYWORDS = _keywords(
     "SOFTWARE_KEYWORDS",
     "software,developer,développeur,developpeur,swe,programmer,"
-    "programming,software engineer,logiciel",
+    "programming,software engineer,logiciel,informatique",
 )
 
 
 class _BoardParser(HTMLParser):
-    """Pull (id, title, location, department) out of the Greenhouse embed HTML.
-
-    Markup-agnostic: a job is any <a href=".../jobs/{id}">. Its location is taken
-    to be the text that follows the link up to the next link or section heading,
-    so it doesn't depend on Greenhouse's CSS class names. Section <h1>-<h6>
-    headings set the current department.
-    """
-
     _HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
 
     def __init__(self):
         super().__init__()
         self.jobs = []
         self._dept = ""
-        self._mode = None          # None | "heading" | "title"
+        self._mode = None
         self._buf = []
         self._href = None
-        self._cap_loc = False      # capturing the text that follows a job link
+        self._cap_loc = False
         self._loc_buf = []
 
     def _finalize_location(self):
@@ -95,7 +83,7 @@ class _BoardParser(HTMLParser):
         is_heading = tag in self._HEADINGS
         is_job = tag == "a" and a.get("href") and re.search(r"/jobs/\d+", a["href"])
         if is_heading or is_job:
-            self._finalize_location()   # a link/heading ends the previous job's location
+            self._finalize_location()
         if is_heading:
             self._mode, self._buf = "heading", []
         elif is_job:
@@ -115,7 +103,7 @@ class _BoardParser(HTMLParser):
             self._mode = None
         elif self._mode == "title" and tag == "a":
             title = html.unescape(" ".join("".join(self._buf).split())).strip()
-            title = re.sub(r"\s*New$", "", title)  # strip the "New" badge
+            title = re.sub(r"\s*New$", "", title)
             job_id = re.search(r"/jobs/(\d+)", self._href)
             href = self._href if self._href.startswith("http") else EMBED_HOST + self._href
             if title:
@@ -129,36 +117,45 @@ class _BoardParser(HTMLParser):
                     }
                 )
             self._mode = None
-            self._cap_loc, self._loc_buf = True, []   # start capturing location text
+            self._cap_loc, self._loc_buf = True, []
 
     def close(self):
         super().close()
         self._finalize_location()
 
 
+def _http_get(url):
+    try:
+        from curl_cffi import requests as cffi
+    except ImportError:
+        req = urllib.request.Request(url, headers=BROWSER_HEADERS)
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return resp.read().decode("utf-8", errors="replace"), "urllib"
+    resp = cffi.get(url, headers=BROWSER_HEADERS, impersonate="chrome", timeout=30)
+    if resp.status_code != 200:
+        raise RuntimeError(f"HTTP {resp.status_code}")
+    return resp.text, "curl_cffi"
+
+
 def _fetch_one(url):
-    req = urllib.request.Request(url, headers=BROWSER_HEADERS)
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        body = resp.read().decode("utf-8", errors="replace")
+    body, transport = _http_get(url)
     parser = _BoardParser()
     parser.feed(body)
     parser.close()
-    return parser.jobs
+    return parser.jobs, transport
 
 
 def fetch_jobs(urls):
-    """Return jobs from the first embed URL that yields any; else raise."""
     errors = []
     for url in urls:
         try:
-            jobs = _fetch_one(url)
-        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as exc:
+            jobs, transport = _fetch_one(url)
+        except Exception as exc:
             errors.append(f"{url} -> {exc}")
             continue
         if jobs:
-            print(f"Parsed {len(jobs)} jobs from {url}")
+            print(f"Parsed {len(jobs)} jobs from {url}  (via {transport})")
             return jobs
-        # A 200 with zero parsed jobs almost certainly means the markup changed.
         errors.append(f"{url} -> 200 but parsed 0 jobs (markup may have changed)")
     raise RuntimeError("Could not fetch a usable board. Tried:\n  " + "\n  ".join(errors))
 
@@ -173,7 +170,6 @@ def is_match(job):
 
 
 def load_seen(path):
-    import json
     try:
         with open(path, encoding="utf-8") as fh:
             return json.load(fh).get("seen", {})
@@ -182,7 +178,6 @@ def load_seen(path):
 
 
 def save_seen(path, seen):
-    import json
     with open(path, "w", encoding="utf-8") as fh:
         json.dump({"seen": seen}, fh, indent=2, sort_keys=True, ensure_ascii=False)
 
