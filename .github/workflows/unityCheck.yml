@@ -1,17 +1,13 @@
 name: Unity early-careers watch (Montreal)
 
-# Fails the run when Unity posts a NEW early-career software role in Montreal.
-# "New" means an offer whose Greenhouse job ID hasn't been matched in a previous
-# run -- the seen list is carried between runs via the Actions cache below.
-#
-# A failed run triggers GitHub's built-in failure notification, so make sure
-# Actions notifications are on: Settings > Notifications > Actions (and Watch
-# the repo). Trigger manually any time from the Actions tab.
+# Fails when Unity posts a NEW early-career software role in Montreal.
+# A failed run triggers GitHub's failure notification: turn on Actions
+# notifications (Settings > Notifications > Actions) and Watch the repo.
 
 on:
   schedule:
-    - cron: "0 13 * * *"   # daily at 13:00 UTC
-  workflow_dispatch:        # allows manual runs
+    - cron: "0 13 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -28,8 +24,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Restore the most recent seen-list. A unique save key per run plus the
-      # "unity-seen-" restore prefix gives a rolling "latest" state.
       - name: Restore previously-seen jobs
         uses: actions/cache/restore@v4
         with:
@@ -38,19 +32,18 @@ jobs:
           restore-keys: |
             unity-seen-
 
-      - name: Install dependencies
-        run: pip install "curl_cffi>=0.7"
+      - name: Install Playwright + Chromium
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
 
       - name: Check Unity careers for new Montreal early-career software roles
         run: python Scripts/check_unity_jobs.py
         env:
-          PROXY_URL: ${{ secrets.PROXY_URL }}
-          LOCATION_KEYWORDS: "montreal,montréal"
-          EARLY_CAREER_KEYWORDS: "early career,student,intern,internship,co-op,coop,new grad,new graduate,graduate,apprentice,campus,junior,stagiaire,stage,étudiant,etudiant,alternance,apprenti,débutant,junior,jeune diplômé,diplômé"
+          MATCH_URL: "https://unity.com/careers/positions?location=can-montreal"
+          EARLY_CAREER_KEYWORDS: "early career,student,intern,internship,co-op,coop,new grad,new graduate,graduate,apprentice,campus,junior,stagiaire,stage,étudiant,etudiant,alternance,apprenti,débutant,jeune diplômé,diplômé"
           SOFTWARE_KEYWORDS: "software,developer,software engineer,swe,programmer,programming,logiciel,informatique,développeur,développeuse,developpeur,développement,programmeur,génie logiciel,génie informatique"
 
-      # Save the updated seen-list even when the check fails (a match = failure),
-      # so the same offer won't fail the next run.
       - name: Save seen jobs
         if: always()
         uses: actions/cache/save@v4

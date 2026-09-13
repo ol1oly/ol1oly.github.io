@@ -1,192 +1,90 @@
 #!/usr/bin/env python3
-"""Fail if Unity's Greenhouse board has a NEW early-career software role in Montreal.
+"""Fail if Unity's careers site has a NEW early-career software role in Montreal.
+
+Unity disabled the public Greenhouse API and embed, so this renders Unity's own
+Montreal-filtered careers page with a headless browser and flags new roles whose
+title is both early-career and software.
 
 Exit codes:
     0  no new matching roles (nothing found, or all matches already seen)
     1  one or more new matching roles found
-    2  could not fetch or parse the board
+    2  could not render or read the careers site
 """
 
-import html
 import json
 import os
 import re
 import sys
-import urllib.error
-import urllib.request
 from datetime import datetime, timezone
-from html.parser import HTMLParser
 
-BOARD = os.environ.get("GREENHOUSE_BOARD", "unity3d")
-EMBED_URLS = [
-    u.strip()
-    for u in os.environ.get(
-        "GREENHOUSE_EMBED_URLS",
-        f"https://job-boards.greenhouse.io/embed/job_board?for={BOARD},"
-        f"https://boards.greenhouse.io/embed/job_board?for={BOARD}",
-    ).split(",")
-    if u.strip()
-]
-EMBED_HOST = "https://job-boards.greenhouse.io"
 SEEN_FILE = os.environ.get("SEEN_FILE", "seen_jobs.json")
-
-BROWSER_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Referer": "https://unity.com/careers",
-}
+MATCH_URL = os.environ.get(
+    "MATCH_URL", "https://unity.com/careers/positions?location=can-montreal"
+)
+JOB_SELECTOR = os.environ.get("JOB_SELECTOR", 'a[href*="/position"], a[href*="/jobs/"]')
+NAV_TIMEOUT = int(os.environ.get("NAV_TIMEOUT_MS", "45000"))
+USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+)
 
 
 def _keywords(env_name, default):
     return [k.strip().lower() for k in os.environ.get(env_name, default).split(",") if k.strip()]
 
 
-LOCATION_KEYWORDS = _keywords("LOCATION_KEYWORDS", "montreal,montréal")
 EARLY_CAREER_KEYWORDS = _keywords(
     "EARLY_CAREER_KEYWORDS",
-    "early career,student,intern,internship,stagiaire,stage,new grad,"
-    "new graduate,graduate,apprentice,co-op,coop,campus,junior",
+    "early career,student,intern,internship,stagiaire,stage,new grad,new graduate,"
+    "graduate,apprentice,apprenti,co-op,coop,campus,junior,étudiant,etudiant,"
+    "alternance,débutant,jeune diplômé,diplômé",
 )
 SOFTWARE_KEYWORDS = _keywords(
     "SOFTWARE_KEYWORDS",
-    "software,developer,développeur,developpeur,swe,programmer,"
-    "programming,software engineer,logiciel,informatique",
+    "software,developer,software engineer,swe,programmer,programming,logiciel,"
+    "informatique,développeur,développeuse,developpeur,développement,programmeur,"
+    "génie logiciel,génie informatique",
 )
 
 
-class _BoardParser(HTMLParser):
-    _HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
+def render_jobs(url):
+    from playwright.sync_api import sync_playwright
 
-    def __init__(self):
-        super().__init__()
-        self.jobs = []
-        self._dept = ""
-        self._mode = None
-        self._buf = []
-        self._href = None
-        self._cap_loc = False
-        self._loc_buf = []
-
-    def _finalize_location(self):
-        if self._cap_loc:
-            loc = html.unescape(" ".join("".join(self._loc_buf).split())).strip()
-            if loc and self.jobs and not self.jobs[-1]["location"]:
-                self.jobs[-1]["location"] = loc
-            self._cap_loc, self._loc_buf = False, []
-
-    def handle_starttag(self, tag, attrs):
-        a = dict(attrs)
-        is_heading = tag in self._HEADINGS
-        is_job = tag == "a" and a.get("href") and re.search(r"/jobs/\d+", a["href"])
-        if is_heading or is_job:
-            self._finalize_location()
-        if is_heading:
-            self._mode, self._buf = "heading", []
-        elif is_job:
-            self._mode, self._buf, self._href = "title", [], a["href"]
-
-    def handle_data(self, data):
-        if self._mode in ("heading", "title"):
-            self._buf.append(data)
-        elif self._cap_loc:
-            self._loc_buf.append(data)
-
-    def handle_endtag(self, tag):
-        if self._mode == "heading" and tag in self._HEADINGS:
-            text = html.unescape(" ".join("".join(self._buf).split())).strip()
-            if text and text.lower() not in ("job", "jobs", "openings"):
-                self._dept = text
-            self._mode = None
-        elif self._mode == "title" and tag == "a":
-            title = html.unescape(" ".join("".join(self._buf).split())).strip()
-            title = re.sub(r"\s*New$", "", title)
-            job_id = re.search(r"/jobs/(\d+)", self._href)
-            href = self._href if self._href.startswith("http") else EMBED_HOST + self._href
-            if title:
-                self.jobs.append(
-                    {
-                        "id": job_id.group(1) if job_id else href,
-                        "title": title,
-                        "absolute_url": href,
-                        "location": "",
-                        "department": self._dept,
-                    }
-                )
-            self._mode = None
-            self._cap_loc, self._loc_buf = True, []
-
-    def close(self):
-        super().close()
-        self._finalize_location()
-
-
-READER_PREFIX = os.environ.get("READER_URL_PREFIX", "https://r.jina.ai/")
-
-
-def _proxies():
-    p = os.environ.get("PROXY_URL") or os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
-    return {"http": p, "https": p} if p else None
-
-
-def _http_get(url, extra_headers=None):
-    headers = dict(BROWSER_HEADERS)
-    if extra_headers:
-        headers.update(extra_headers)
-    proxies = _proxies()
-    try:
-        from curl_cffi import requests as cffi
-    except ImportError:
-        handler = urllib.request.ProxyHandler(proxies or {})
-        opener = urllib.request.build_opener(handler)
-        req = urllib.request.Request(url, headers=headers)
-        with opener.open(req, timeout=45) as resp:
-            return resp.read().decode("utf-8", errors="replace"), "urllib"
-    kwargs = {"headers": headers, "impersonate": "chrome", "timeout": 45}
-    if proxies:
-        kwargs["proxies"] = proxies
-    resp = cffi.get(url, **kwargs)
-    if resp.status_code != 200:
-        raise RuntimeError(f"HTTP {resp.status_code}")
-    return resp.text, "curl_cffi"
-
-
-def _candidates(urls):
-    for u in urls:
-        yield u, None, "direct"
-    if READER_PREFIX:
-        for u in urls:
-            yield READER_PREFIX + u, {"X-Return-Format": "html"}, "reader"
-
-
-def fetch_jobs(urls):
-    errors = []
-    for url, extra, mode in _candidates(urls):
+    jobs, seen_keys = [], set()
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(args=["--no-sandbox", "--disable-dev-shm-usage"])
+        page = browser.new_page(user_agent=USER_AGENT, locale="en-US")
+        page.goto(url, wait_until="networkidle", timeout=NAV_TIMEOUT)
         try:
-            body, transport = _http_get(url, extra)
-        except Exception as exc:
-            errors.append(f"[{mode}] {url} -> {exc}")
-            continue
-        parser = _BoardParser()
-        parser.feed(body)
-        parser.close()
-        if parser.jobs:
-            print(f"Parsed {len(parser.jobs)} jobs from {url}  (via {transport}/{mode})")
-            return parser.jobs
-        errors.append(f"[{mode}] {url} -> parsed 0 jobs")
-    raise RuntimeError("Could not fetch a usable board. Tried:\n  " + "\n  ".join(errors))
+            page.wait_for_selector(JOB_SELECTOR, timeout=10000)
+        except Exception:
+            pass
+        for el in page.query_selector_all(JOB_SELECTOR):
+            title = (el.inner_text() or "").strip()
+            href = el.get_attribute("href") or ""
+            if not title:
+                continue
+            key = href or title
+            if key in seen_keys:
+                continue
+            seen_keys.add(key)
+            job_id = re.search(r"(\d{5,})", href)
+            jobs.append(
+                {
+                    "id": job_id.group(1) if job_id else (href or title),
+                    "title": title,
+                    "absolute_url": href if href.startswith("http") else "https://unity.com" + href,
+                }
+            )
+        browser.close()
+    return jobs
 
 
 def is_match(job):
-    location = job["location"].lower()
-    role_text = f"{job['title'].lower()} {job['department'].lower()}"
-    in_location = any(k in location for k in LOCATION_KEYWORDS)
-    early_career = any(k in role_text for k in EARLY_CAREER_KEYWORDS)
-    software = any(k in role_text for k in SOFTWARE_KEYWORDS)
-    return in_location and early_career and software
+    t = job["title"].lower()
+    early = any(k in t for k in EARLY_CAREER_KEYWORDS)
+    software = any(k in t for k in SOFTWARE_KEYWORDS)
+    return early and software
 
 
 def load_seen(path):
@@ -210,22 +108,21 @@ def write_summary(lines):
         fh.write("\n".join(lines) + "\n")
 
 
-def describe(job):
-    loc = job["location"] or "(no location listed)"
-    return f"{job['title']} \u2014 {loc}"
-
-
 def main():
     seen = load_seen(SEEN_FILE)
     print(f"Loaded {len(seen)} previously-seen job ID(s) from {SEEN_FILE}.")
 
     try:
-        jobs = fetch_jobs(EMBED_URLS)
-    except RuntimeError as exc:
-        print(f"::error::{exc}", file=sys.stderr)
+        jobs = render_jobs(MATCH_URL)
+    except Exception as exc:
+        print(f"::error::Could not render {MATCH_URL}: {exc}", file=sys.stderr)
         return 2
 
-    print(f"Location keywords:     {LOCATION_KEYWORDS}")
+    print(f"Rendered {len(jobs)} Montreal roles from {MATCH_URL}")
+    if not jobs:
+        print(f"::error::Rendered 0 roles -- selector '{JOB_SELECTOR}' may be wrong.", file=sys.stderr)
+        return 2
+
     print(f"Early-career keywords: {EARLY_CAREER_KEYWORDS}")
     print(f"Software keywords:     {SOFTWARE_KEYWORDS}\n")
 
@@ -236,26 +133,22 @@ def main():
 
     now = datetime.now(timezone.utc).isoformat()
     for job in new_jobs:
-        seen[str(job["id"])] = {
-            "title": job["title"],
-            "location": job["location"],
-            "first_seen": now,
-        }
+        seen[str(job["id"])] = {"title": job["title"], "first_seen": now}
     save_seen(SEEN_FILE, seen)
 
     summary = ["### Unity early-careers software watch (Montreal)", ""]
 
     if not matches:
-        print("No early-career software roles in Montreal found. \u2713")
-        summary.append("No matching roles found. \u2705")
+        print("No early-career software roles in Montreal found.")
+        summary.append("No matching roles found.")
         write_summary(summary)
         return 0
 
     if not new_jobs:
-        msg = f"{len(already_seen)} matching role(s), all previously seen \u2014 not failing."
+        msg = f"{len(already_seen)} matching role(s), all previously seen -- not failing."
         print(msg)
         for job in already_seen:
-            print(f"  (seen) {describe(job)}")
+            print(f"  (seen) {job['title']}")
         summary.append(msg)
         write_summary(summary)
         return 0
@@ -264,8 +157,8 @@ def main():
     print(f"::warning::{header}")
     summary += [f"**{header}**", ""]
     for job in new_jobs:
-        print(f"  - {describe(job)}\n    {job['absolute_url']}")
-        summary.append(f"- [{describe(job)}]({job['absolute_url']})")
+        print(f"  - {job['title']}\n    {job['absolute_url']}")
+        summary.append(f"- [{job['title']}]({job['absolute_url']})")
     if already_seen:
         note = f"(Plus {len(already_seen)} previously-seen match(es), not counted.)"
         print(note)
