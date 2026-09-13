@@ -124,39 +124,59 @@ class _BoardParser(HTMLParser):
         self._finalize_location()
 
 
-def _http_get(url):
+READER_PREFIX = os.environ.get("READER_URL_PREFIX", "https://r.jina.ai/")
+
+
+def _proxies():
+    p = os.environ.get("PROXY_URL") or os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+    return {"http": p, "https": p} if p else None
+
+
+def _http_get(url, extra_headers=None):
+    headers = dict(BROWSER_HEADERS)
+    if extra_headers:
+        headers.update(extra_headers)
+    proxies = _proxies()
     try:
         from curl_cffi import requests as cffi
     except ImportError:
-        req = urllib.request.Request(url, headers=BROWSER_HEADERS)
-        with urllib.request.urlopen(req, timeout=30) as resp:
+        handler = urllib.request.ProxyHandler(proxies or {})
+        opener = urllib.request.build_opener(handler)
+        req = urllib.request.Request(url, headers=headers)
+        with opener.open(req, timeout=45) as resp:
             return resp.read().decode("utf-8", errors="replace"), "urllib"
-    resp = cffi.get(url, headers=BROWSER_HEADERS, impersonate="chrome", timeout=30)
+    kwargs = {"headers": headers, "impersonate": "chrome", "timeout": 45}
+    if proxies:
+        kwargs["proxies"] = proxies
+    resp = cffi.get(url, **kwargs)
     if resp.status_code != 200:
         raise RuntimeError(f"HTTP {resp.status_code}")
     return resp.text, "curl_cffi"
 
 
-def _fetch_one(url):
-    body, transport = _http_get(url)
-    parser = _BoardParser()
-    parser.feed(body)
-    parser.close()
-    return parser.jobs, transport
+def _candidates(urls):
+    for u in urls:
+        yield u, None, "direct"
+    if READER_PREFIX:
+        for u in urls:
+            yield READER_PREFIX + u, {"X-Return-Format": "html"}, "reader"
 
 
 def fetch_jobs(urls):
     errors = []
-    for url in urls:
+    for url, extra, mode in _candidates(urls):
         try:
-            jobs, transport = _fetch_one(url)
+            body, transport = _http_get(url, extra)
         except Exception as exc:
-            errors.append(f"{url} -> {exc}")
+            errors.append(f"[{mode}] {url} -> {exc}")
             continue
-        if jobs:
-            print(f"Parsed {len(jobs)} jobs from {url}  (via {transport})")
-            return jobs
-        errors.append(f"{url} -> 200 but parsed 0 jobs (markup may have changed)")
+        parser = _BoardParser()
+        parser.feed(body)
+        parser.close()
+        if parser.jobs:
+            print(f"Parsed {len(parser.jobs)} jobs from {url}  (via {transport}/{mode})")
+            return parser.jobs
+        errors.append(f"[{mode}] {url} -> parsed 0 jobs")
     raise RuntimeError("Could not fetch a usable board. Tried:\n  " + "\n  ".join(errors))
 
 
