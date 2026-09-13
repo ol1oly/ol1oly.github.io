@@ -1,35 +1,31 @@
 #!/usr/bin/env python3
-"""Check Unity's public Greenhouse job board for early-career SOFTWARE roles in Montreal.
+"""Check Unity's Greenhouse job board for early-career SOFTWARE roles in Montreal.
 
 Exit codes (GitHub treats any non-zero as a failed run):
     0  no NEW matching roles (nothing found, or all matches already seen) -> passes
     1  one or more NEW matching roles                                     -> fails (alert)
-    2  no Greenhouse host returned a job list                             -> fails (broken check)
+    2  could not fetch/parse the board                                    -> fails (broken check)
+
+Everything is configurable via environment variables.
 """
 
-import json
+import html
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 
 BOARD = os.environ.get("GREENHOUSE_BOARD", "unity3d")
+EMBED_URL = os.environ.get(
+    "GREENHOUSE_EMBED_URL",
+    f"https://job-boards.greenhouse.io/embed/job_board?for={BOARD}",
+)
+EMBED_HOST = "https://job-boards.greenhouse.io"
 SEEN_FILE = os.environ.get("SEEN_FILE", "seen_jobs.json")
-
-# Greenhouse serves the public job-board API from several hosts. Tried in order;
-# the first that returns a JSON body with a "jobs" key wins.
-API_HOSTS = [
-    h.strip().rstrip("/")
-    for h in os.environ.get(
-        "GREENHOUSE_API_HOSTS",
-        "https://boards-api.greenhouse.io,"
-        "https://api.greenhouse.io,"
-        "https://job-boards.greenhouse.io,"
-        "https://boards-api.eu.greenhouse.io",
-    ).split(",")
-    if h.strip()
-]
+USER_AGENT = "unity-early-careers-check/4.0"
 
 
 def _keywords(env_name, default):
@@ -49,65 +45,106 @@ SOFTWARE_KEYWORDS = _keywords(
     "programming,software engineer,logiciel",
 )
 
-# Metadata fields whose NAME contains one of these are treated as location info
-# (covers boards that keep "Remote/Hybrid" in location.name and the city here).
-LOCATION_META_HINTS = ("location", "office", "city", "region", "country", "site", "place")
 
-USER_AGENT = "unity-early-careers-check/3.0"
+class _BoardParser(HTMLParser):
+    """Pull (id, title, location, department) out of the Greenhouse embed HTML.
+
+    Markup-agnostic: a job is any <a href=".../jobs/{id}">. Its location is taken
+    to be the text that follows the link up to the next link or section heading,
+    so it doesn't depend on Greenhouse's CSS class names. Section <h1>-<h6>
+    headings set the current department.
+    """
+
+    _HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
+
+    def __init__(self):
+        super().__init__()
+        self.jobs = []
+        self._dept = ""
+        self._mode = None          # None | "heading" | "title"
+        self._buf = []
+        self._href = None
+        self._cap_loc = False      # capturing the text that follows a job link
+        self._loc_buf = []
+
+    def _finalize_location(self):
+        if self._cap_loc:
+            loc = html.unescape(" ".join("".join(self._loc_buf).split())).strip()
+            if loc and self.jobs and not self.jobs[-1]["location"]:
+                self.jobs[-1]["location"] = loc
+            self._cap_loc, self._loc_buf = False, []
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        is_heading = tag in self._HEADINGS
+        is_job = tag == "a" and a.get("href") and re.search(r"/jobs/\d+", a["href"])
+        if is_heading or is_job:
+            self._finalize_location()   # a link/heading ends the previous job's location
+        if is_heading:
+            self._mode, self._buf = "heading", []
+        elif is_job:
+            self._mode, self._buf, self._href = "title", [], a["href"]
+
+    def handle_data(self, data):
+        if self._mode in ("heading", "title"):
+            self._buf.append(data)
+        elif self._cap_loc:
+            self._loc_buf.append(data)
+
+    def handle_endtag(self, tag):
+        if self._mode == "heading" and tag in self._HEADINGS:
+            text = html.unescape(" ".join("".join(self._buf).split())).strip()
+            if text and text.lower() not in ("job", "jobs", "openings"):
+                self._dept = text
+            self._mode = None
+        elif self._mode == "title" and tag == "a":
+            title = html.unescape(" ".join("".join(self._buf).split())).strip()
+            title = re.sub(r"\s*New$", "", title)  # strip the "New" badge
+            job_id = re.search(r"/jobs/(\d+)", self._href)
+            href = self._href if self._href.startswith("http") else EMBED_HOST + self._href
+            if title:
+                self.jobs.append(
+                    {
+                        "id": job_id.group(1) if job_id else href,
+                        "title": title,
+                        "absolute_url": href,
+                        "location": "",
+                        "department": self._dept,
+                    }
+                )
+            self._mode = None
+            self._cap_loc, self._loc_buf = True, []   # start capturing location text
+
+    def close(self):
+        super().close()
+        self._finalize_location()
 
 
-def fetch_jobs(board):
-    """Return the list of jobs from the first Greenhouse host that serves them."""
-    errors = []
-    for host in API_HOSTS:
-        url = f"{host}/v1/boards/{board}/jobs?content=true"
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                data = json.load(resp)
-        except urllib.error.HTTPError as exc:
-            errors.append(f"{url} -> HTTP {exc.code}")
-            continue
-        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
-            errors.append(f"{url} -> {exc}")
-            continue
-        jobs = data.get("jobs")
-        if jobs is not None:
-            print(f"Using {url}  ({len(jobs)} jobs)")
-            return jobs
-        errors.append(f"{url} -> 200 but no 'jobs' key")
-    raise RuntimeError("No Greenhouse host returned a job list. Tried:\n  " + "\n  ".join(errors))
+def fetch_jobs(url):
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            body = resp.read().decode("utf-8", errors="replace")
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as exc:
+        raise RuntimeError(f"Could not fetch the board at {url}: {exc}")
 
-
-def job_location_text(job):
-    parts = []
-    loc = job.get("location") or {}
-    if loc.get("name"):
-        parts.append(loc["name"])
-    for office in job.get("offices") or []:
-        if office.get("name"):
-            parts.append(office["name"])
-        if office.get("location"):
-            parts.append(office["location"])
-    for meta in job.get("metadata") or []:
-        if any(hint in (meta.get("name") or "").lower() for hint in LOCATION_META_HINTS):
-            value = meta.get("value")
-            if isinstance(value, list):
-                parts.append(", ".join(str(v) for v in value))
-            elif value:
-                parts.append(str(value))
-    return " | ".join(parts)
-
-
-def job_department_text(job):
-    return " | ".join(d.get("name", "") for d in (job.get("departments") or []))
+    parser = _BoardParser()
+    parser.feed(body)
+    parser.close()
+    jobs = parser.jobs
+    if not jobs:
+        # A 200 with zero parsed jobs almost certainly means the markup changed.
+        # Fail loudly rather than silently reporting "nothing found".
+        raise RuntimeError(
+            f"Fetched {url} but parsed 0 jobs -- the embed markup may have changed."
+        )
+    print(f"Parsed {len(jobs)} jobs from {url}")
+    return jobs
 
 
 def is_match(job):
-    location = job_location_text(job).lower()
-    # Match early-career and software signals on title + department only (not the
-    # full description), which keeps false positives down.
-    role_text = f"{(job.get('title') or '').lower()} {job_department_text(job).lower()}"
+    location = job["location"].lower()
+    role_text = f"{job['title'].lower()} {job['department'].lower()}"
     in_location = any(k in location for k in LOCATION_KEYWORDS)
     early_career = any(k in role_text for k in EARLY_CAREER_KEYWORDS)
     software = any(k in role_text for k in SOFTWARE_KEYWORDS)
@@ -115,6 +152,7 @@ def is_match(job):
 
 
 def load_seen(path):
+    import json
     try:
         with open(path, encoding="utf-8") as fh:
             return json.load(fh).get("seen", {})
@@ -123,6 +161,7 @@ def load_seen(path):
 
 
 def save_seen(path, seen):
+    import json
     with open(path, "w", encoding="utf-8") as fh:
         json.dump({"seen": seen}, fh, indent=2, sort_keys=True, ensure_ascii=False)
 
@@ -136,7 +175,8 @@ def write_summary(lines):
 
 
 def describe(job):
-    return f"{job.get('title', '(no title)')} \u2014 {job_location_text(job)}"
+    loc = job["location"] or "(no location listed)"
+    return f"{job['title']} \u2014 {loc}"
 
 
 def main():
@@ -144,9 +184,8 @@ def main():
     print(f"Loaded {len(seen)} previously-seen job ID(s) from {SEEN_FILE}.")
 
     try:
-        jobs = fetch_jobs(BOARD)
+        jobs = fetch_jobs(EMBED_URL)
     except RuntimeError as exc:
-        # Leave the seen file untouched so we don't lose state on a transient error.
         print(f"::error::{exc}", file=sys.stderr)
         return 2
 
@@ -157,13 +196,13 @@ def main():
     matches = [j for j in jobs if is_match(j)]
     new_jobs, already_seen = [], []
     for job in matches:
-        (already_seen if str(job.get("id")) in seen else new_jobs).append(job)
+        (already_seen if str(job["id"]) in seen else new_jobs).append(job)
 
     now = datetime.now(timezone.utc).isoformat()
     for job in new_jobs:
-        seen[str(job.get("id"))] = {
-            "title": job.get("title", ""),
-            "location": job_location_text(job),
+        seen[str(job["id"])] = {
+            "title": job["title"],
+            "location": job["location"],
             "first_seen": now,
         }
     save_seen(SEEN_FILE, seen)
@@ -189,9 +228,8 @@ def main():
     print(f"::warning::{header}")
     summary += [f"**{header}**", ""]
     for job in new_jobs:
-        url = job.get("absolute_url", "")
-        print(f"  - {describe(job)}\n    {url}")
-        summary.append(f"- [{describe(job)}]({url})")
+        print(f"  - {describe(job)}\n    {job['absolute_url']}")
+        summary.append(f"- [{describe(job)}]({job['absolute_url']})")
     if already_seen:
         note = f"(Plus {len(already_seen)} previously-seen match(es), not counted.)"
         print(note)
