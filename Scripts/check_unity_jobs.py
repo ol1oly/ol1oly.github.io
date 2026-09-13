@@ -19,13 +19,29 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 
 BOARD = os.environ.get("GREENHOUSE_BOARD", "unity3d")
-EMBED_URL = os.environ.get(
-    "GREENHOUSE_EMBED_URL",
-    f"https://job-boards.greenhouse.io/embed/job_board?for={BOARD}",
-)
+# Greenhouse's edge serves a 404 to requests that don't look like a browser, and
+# the embed is mirrored on two hosts. Try each in turn with browser-like headers.
+EMBED_URLS = [
+    u.strip()
+    for u in os.environ.get(
+        "GREENHOUSE_EMBED_URLS",
+        f"https://job-boards.greenhouse.io/embed/job_board?for={BOARD},"
+        f"https://boards.greenhouse.io/embed/job_board?for={BOARD}",
+    ).split(",")
+    if u.strip()
+]
 EMBED_HOST = "https://job-boards.greenhouse.io"
 SEEN_FILE = os.environ.get("SEEN_FILE", "seen_jobs.json")
-USER_AGENT = "unity-early-careers-check/4.0"
+
+BROWSER_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://unity.com/careers",
+}
 
 
 def _keywords(env_name, default):
@@ -120,26 +136,31 @@ class _BoardParser(HTMLParser):
         self._finalize_location()
 
 
-def fetch_jobs(url):
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            body = resp.read().decode("utf-8", errors="replace")
-    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as exc:
-        raise RuntimeError(f"Could not fetch the board at {url}: {exc}")
-
+def _fetch_one(url):
+    req = urllib.request.Request(url, headers=BROWSER_HEADERS)
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        body = resp.read().decode("utf-8", errors="replace")
     parser = _BoardParser()
     parser.feed(body)
     parser.close()
-    jobs = parser.jobs
-    if not jobs:
+    return parser.jobs
+
+
+def fetch_jobs(urls):
+    """Return jobs from the first embed URL that yields any; else raise."""
+    errors = []
+    for url in urls:
+        try:
+            jobs = _fetch_one(url)
+        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as exc:
+            errors.append(f"{url} -> {exc}")
+            continue
+        if jobs:
+            print(f"Parsed {len(jobs)} jobs from {url}")
+            return jobs
         # A 200 with zero parsed jobs almost certainly means the markup changed.
-        # Fail loudly rather than silently reporting "nothing found".
-        raise RuntimeError(
-            f"Fetched {url} but parsed 0 jobs -- the embed markup may have changed."
-        )
-    print(f"Parsed {len(jobs)} jobs from {url}")
-    return jobs
+        errors.append(f"{url} -> 200 but parsed 0 jobs (markup may have changed)")
+    raise RuntimeError("Could not fetch a usable board. Tried:\n  " + "\n  ".join(errors))
 
 
 def is_match(job):
@@ -184,7 +205,7 @@ def main():
     print(f"Loaded {len(seen)} previously-seen job ID(s) from {SEEN_FILE}.")
 
     try:
-        jobs = fetch_jobs(EMBED_URL)
+        jobs = fetch_jobs(EMBED_URLS)
     except RuntimeError as exc:
         print(f"::error::{exc}", file=sys.stderr)
         return 2
