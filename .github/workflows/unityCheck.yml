@@ -42,7 +42,7 @@ jobs:
         run: pip install "curl_cffi>=0.7"
 
       - name: Check Unity careers for new Montreal early-career software roles
-        run: python scripts/check_unity_jobs.py
+        run: python Scripts/check_unity_jobs.py
         env:
           LOCATION_KEYWORDS: "montreal,montréal"
           EARLY_CAREER_KEYWORDS: "early career,student,intern,internship,co-op,coop,new grad,new graduate,graduate,apprentice,campus,junior,stagiaire,stage,étudiant,etudiant,alternance,apprenti,débutant,junior,jeune diplômé,diplômé"
