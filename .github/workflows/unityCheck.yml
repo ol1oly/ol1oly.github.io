@@ -38,7 +38,7 @@ jobs:
             unity-seen-
 
       - name: Check Unity careers for new Montreal early-career software roles
-        run: python scripts/check_unity_jobs.py
+        run: python Scripts/check_unity_jobs.py
         # Optional overrides (defaults target Unity / Montreal / software):
         # env:
         #   GREENHOUSE_BOARD: unity3d
