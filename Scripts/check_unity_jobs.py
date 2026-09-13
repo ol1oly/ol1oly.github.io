@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 """Check Unity's public Greenhouse job board for early-career SOFTWARE roles in Montreal.
+
+Exit codes (GitHub treats any non-zero as a failed run):
+    0  no NEW matching roles (nothing found, or all matches already seen) -> passes
+    1  one or more NEW matching roles                                     -> fails (alert)
+    2  no Greenhouse host returned a job list                             -> fails (broken check)
 """
 
 import json
@@ -10,8 +15,21 @@ import urllib.request
 from datetime import datetime, timezone
 
 BOARD = os.environ.get("GREENHOUSE_BOARD", "unity3d")
-API_URL = f"https://boards-api.greenhouse.io/v1/boards/{BOARD}/jobs?content=true"
 SEEN_FILE = os.environ.get("SEEN_FILE", "seen_jobs.json")
+
+# Greenhouse serves the public job-board API from several hosts. Tried in order;
+# the first that returns a JSON body with a "jobs" key wins.
+API_HOSTS = [
+    h.strip().rstrip("/")
+    for h in os.environ.get(
+        "GREENHOUSE_API_HOSTS",
+        "https://boards-api.greenhouse.io,"
+        "https://api.greenhouse.io,"
+        "https://job-boards.greenhouse.io,"
+        "https://boards-api.eu.greenhouse.io",
+    ).split(",")
+    if h.strip()
+]
 
 
 def _keywords(env_name, default):
@@ -31,11 +49,34 @@ SOFTWARE_KEYWORDS = _keywords(
     "programming,software engineer,logiciel",
 )
 
+# Metadata fields whose NAME contains one of these are treated as location info
+# (covers boards that keep "Remote/Hybrid" in location.name and the city here).
+LOCATION_META_HINTS = ("location", "office", "city", "region", "country", "site", "place")
 
-def fetch_jobs(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "unity-early-careers-check/2.0"})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return json.load(resp).get("jobs", [])
+USER_AGENT = "unity-early-careers-check/3.0"
+
+
+def fetch_jobs(board):
+    """Return the list of jobs from the first Greenhouse host that serves them."""
+    errors = []
+    for host in API_HOSTS:
+        url = f"{host}/v1/boards/{board}/jobs?content=true"
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.load(resp)
+        except urllib.error.HTTPError as exc:
+            errors.append(f"{url} -> HTTP {exc.code}")
+            continue
+        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+            errors.append(f"{url} -> {exc}")
+            continue
+        jobs = data.get("jobs")
+        if jobs is not None:
+            print(f"Using {url}  ({len(jobs)} jobs)")
+            return jobs
+        errors.append(f"{url} -> 200 but no 'jobs' key")
+    raise RuntimeError("No Greenhouse host returned a job list. Tried:\n  " + "\n  ".join(errors))
 
 
 def job_location_text(job):
@@ -48,6 +89,13 @@ def job_location_text(job):
             parts.append(office["name"])
         if office.get("location"):
             parts.append(office["location"])
+    for meta in job.get("metadata") or []:
+        if any(hint in (meta.get("name") or "").lower() for hint in LOCATION_META_HINTS):
+            value = meta.get("value")
+            if isinstance(value, list):
+                parts.append(", ".join(str(v) for v in value))
+            elif value:
+                parts.append(str(value))
     return " | ".join(parts)
 
 
@@ -57,8 +105,8 @@ def job_department_text(job):
 
 def is_match(job):
     location = job_location_text(job).lower()
-    # Match the early-career and software signals on title + department only (not
-    # the full description), which keeps false positives down.
+    # Match early-career and software signals on title + department only (not the
+    # full description), which keeps false positives down.
     role_text = f"{(job.get('title') or '').lower()} {job_department_text(job).lower()}"
     in_location = any(k in location for k in LOCATION_KEYWORDS)
     early_career = any(k in role_text for k in EARLY_CAREER_KEYWORDS)
@@ -67,7 +115,6 @@ def is_match(job):
 
 
 def load_seen(path):
-    """Return the dict of already-seen job IDs, or empty if missing/corrupt."""
     try:
         with open(path, encoding="utf-8") as fh:
             return json.load(fh).get("seen", {})
@@ -81,7 +128,6 @@ def save_seen(path, seen):
 
 
 def write_summary(lines):
-    """Write a Markdown summary to the GitHub Actions run page, if available."""
     path = os.environ.get("GITHUB_STEP_SUMMARY")
     if not path:
         return
@@ -94,18 +140,16 @@ def describe(job):
 
 
 def main():
-    print(f"Querying {API_URL}")
     seen = load_seen(SEEN_FILE)
     print(f"Loaded {len(seen)} previously-seen job ID(s) from {SEEN_FILE}.")
 
     try:
-        jobs = fetch_jobs(API_URL)
-    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError) as exc:
+        jobs = fetch_jobs(BOARD)
+    except RuntimeError as exc:
         # Leave the seen file untouched so we don't lose state on a transient error.
-        print(f"::error::Could not query the Greenhouse API: {exc}", file=sys.stderr)
+        print(f"::error::{exc}", file=sys.stderr)
         return 2
 
-    print(f"Fetched {len(jobs)} total published jobs.")
     print(f"Location keywords:     {LOCATION_KEYWORDS}")
     print(f"Early-career keywords: {EARLY_CAREER_KEYWORDS}")
     print(f"Software keywords:     {SOFTWARE_KEYWORDS}\n")
@@ -115,8 +159,6 @@ def main():
     for job in matches:
         (already_seen if str(job.get("id")) in seen else new_jobs).append(job)
 
-    # Record any newly-seen matches, then persist. The workflow's cache-save step
-    # runs with `if: always()`, so this is stored even when we exit non-zero.
     now = datetime.now(timezone.utc).isoformat()
     for job in new_jobs:
         seen[str(job.get("id"))] = {
