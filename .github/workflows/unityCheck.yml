@@ -44,6 +44,7 @@ jobs:
       - name: Check Unity careers for new Montreal early-career software roles
         run: python Scripts/check_unity_jobs.py
         env:
+          PROXY_URL: ${{ secrets.PROXY_URL }}
           LOCATION_KEYWORDS: "montreal,montréal"
           EARLY_CAREER_KEYWORDS: "early career,student,intern,internship,co-op,coop,new grad,new graduate,graduate,apprentice,campus,junior,stagiaire,stage,étudiant,etudiant,alternance,apprenti,débutant,junior,jeune diplômé,diplômé"
           SOFTWARE_KEYWORDS: "software,developer,software engineer,swe,programmer,programming,logiciel,informatique,développeur,développeuse,developpeur,développement,programmeur,génie logiciel,génie informatique"
